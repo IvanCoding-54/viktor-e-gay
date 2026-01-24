@@ -1,3 +1,7 @@
+/* ============================
+   GLOBAL RESET
+============================ */
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -138,50 +142,6 @@ body.alt-theme .rgb-bg {
   box-shadow: 0 22px 50px rgba(0,0,0,0.9);
   border: 1px solid rgba(255,255,255,0.06);
   animation: fade-in 0.4s ease-out;
-}
-
-.card-glow {
-  box-shadow:
-    0 0 25px rgba(0,255,255,0.4),
-    0 0 45px rgba(255,0,128,0.4),
-    0 22px 50px rgba(0,0,0,0.9);
-}
-
-.card-border {
-  border-image: linear-gradient(120deg, #ff006a, #00f0ff, #7cff00) 1;
-  animation: border-pulse 3s ease-in-out infinite;
-}
-
-.card-glow-pink {
-  border-image: linear-gradient(120deg, #ff006a, #ff7ad9) 1;
-  box-shadow: 0 0 30px rgba(255,0,128,0.6);
-  animation: border-pulse 3s ease-in-out infinite;
-}
-
-.card-glow-blue {
-  border-image: linear-gradient(120deg, #00f0ff, #7cff00) 1;
-  box-shadow: 0 0 30px rgba(0,255,255,0.6);
-  animation: border-pulse 3s ease-in-out infinite;
-}
-
-.card-glow-green {
-  border-image: linear-gradient(120deg, #7cff00, #00f0ff) 1;
-  box-shadow: 0 0 30px rgba(124,255,0,0.6);
-  animation: border-pulse 3s ease-in-out infinite;
-}
-
-.tab {
-  display: none;
-}
-
-.active-tab {
-  display: block;
-}
-
-.section-title {
-  font-size: 24px;
-  margin-bottom: 14px;
-  color: #ffffff;
 }
 
 /* HOME LAYOUT */
@@ -336,13 +296,6 @@ p {
   box-shadow: none;
 }
 
-.game-info {
-  display: flex;
-  justify-content: space-between;
-  font-size: 13px;
-  color: #c0ffc0;
-}
-
 /* ============================
    LEADERBOARD — NEW STYLE
 ============================ */
@@ -382,16 +335,19 @@ p {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   border-left: 4px solid #ff00ff;
-  transition: transform 0.2s, background 0.2s;
+  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
 }
 
+/* ✨ Hover RGB glow */
 #leaderboard-list li:hover {
   transform: translateX(6px);
   background: rgba(255, 0, 200, 0.25);
+  box-shadow: 0 0 18px rgba(255, 0, 200, 0.5),
+              0 0 28px rgba(0, 255, 255, 0.4);
 }
 
+/* Rank number */
 #leaderboard-list li::before {
   content: attr(data-rank) ".";
   font-weight: bold;
@@ -400,6 +356,24 @@ p {
   text-shadow: 0 0 6px #ff00ff;
 }
 
+/* 🥇 TOP 3 COLORS */
+#leaderboard-list li.rank-1 {
+  border-left-color: #ffd700;
+  background: rgba(255, 215, 0, 0.18);
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
+}
+
+#leaderboard-list li.rank-2 {
+  border-left-color: #c0c0c0;
+  background: rgba(192, 192, 192, 0.16);
+  box-shadow: 0 0 12px rgba(192, 192, 192, 0.35);
+}
+
+#leaderboard-list li.rank-3 {
+  border-left-color: #cd7f32;
+  background: rgba(205, 127, 50, 0.16);
+  box-shadow: 0 0 12px rgba(205, 127, 50, 0.35);
+}
 
 /* CONTACT + CHAT */
 
@@ -594,101 +568,3 @@ p {
 
 .flag.pan {
   background: linear-gradient(
-    to bottom,
-    #ff1b8d 0%,
-    #ffda00 50%,
-    #1bb3ff 100%
-  );
-}
-
-.flag.straight {
-  background: linear-gradient(
-    to bottom,
-    #ffffff 0%,
-    #d0d0d0 50%,
-    #000000 100%
-  );
-}
-
-/* REVEAL ON SCROLL */
-
-.reveal {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
-
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* ANIMATIONS */
-
-@keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slide-down {
-  from {
-    opacity: 0;
-    transform: translateY(-12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes rotate-border {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-@keyframes border-pulse {
-  0% { box-shadow: 0 0 10px rgba(0,255,255,0.2); }
-  50% { box-shadow: 0 0 26px rgba(0,255,255,0.7); }
-  100% { box-shadow: 0 0 10px rgba(0,255,255,0.2); }
-}
-
-/* RESPONSIVE */
-
-@media (max-width: 800px) {
-  .navbar {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .tabs {
-    justify-content: flex-start;
-  }
-
-  .home-layout {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .gif {
-    width: 200px;
-  }
-
-  .card {
-    padding: 20px 16px 22px;
-  }
-
-  .title-glow {
-    font-size: 22px;
-  }
-
-  .section-title {
-    font-size: 20px;
-  }
-       
-}
-
