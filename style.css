@@ -354,7 +354,8 @@ body.alt-theme .rgb-bg {
 
 /* Falling flags */
 .flag {
-  position: absolute;
+  z-index: 10;
+  position: relative;
   width: 90px;
   text-align: center;
   padding: 14px 18px;
@@ -366,6 +367,7 @@ body.alt-theme .rgb-bg {
   user-select: none;
   box-shadow: 0 0 12px rgba(255,255,255,0.5);
   animation: fallSmooth 4s linear forwards;
+  pointer-events: auto;
 }
 
 /* Flag colors */
@@ -673,6 +675,7 @@ body.rgb {
     opacity: 1;
   }
 }
+
 
 
 
