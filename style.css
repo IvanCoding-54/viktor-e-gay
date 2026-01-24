@@ -645,3 +645,19 @@ body.rgb {
     font-size: 20px;
   }
 }
+.aim-target.fade-out {
+  animation: fadeOutScale 0.4s forwards;
+}
+
+@keyframes fadeOutScale {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.4);
+  }
+}
+
+
