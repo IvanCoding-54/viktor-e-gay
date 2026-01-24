@@ -346,3 +346,7 @@ function sendMessage() {
 
 window.sendMessage = sendMessage;
 window.closeFlagGame = closeFlagGame;
+
+document.addEventListener("DOMContentLoaded", () => { 
+   renderLeaderboard(); 
+});
