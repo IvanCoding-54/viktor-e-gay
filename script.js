@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* ============================
-   MINI CLICK GAME
+   MINI CLICK GAME (FIXED)
 ============================ */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -103,8 +103,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let interval = null;
   let running = false;
 
-  const btn = ('game-start');
-  const scoreEl = ('game-score');
+  const btn = document.getElementById('game-start');
+  const scoreEl = document.getElementById('game-score');
   const timeEl = document.getElementById('game-time');
 
   if (!btn) return;
@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* ============================
-   AIM TRAINER
+   AIM TRAINER (WITH LEADERBOARD)
 ============================ */
 
 let aimScore = 0;
@@ -216,7 +216,6 @@ document.getElementById("aim-start").onclick = async () => {
 
   aimSpawnInterval = setInterval(spawnAimTarget, 450);
 };
-
 
 /* ============================
    RAINBOW CATCH — POPUP VERSION (A)
@@ -453,5 +452,3 @@ function sendMessage() {
 window.sendMessage = sendMessage;
 
 console.log("SCRIPT LOADED ✔");
-
-
