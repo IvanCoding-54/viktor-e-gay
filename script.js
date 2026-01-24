@@ -189,10 +189,21 @@ function spawnAimTarget() {
   target.style.top = y + "px";
 
   target.onclick = () => {
-    aimScore++;
-    document.getElementById("aim-score").textContent = aimScore;
-    target.remove();
-  };
+  aimScore++;
+  document.getElementById("aim-score").textContent = aimScore;
+
+  // Добавяме анимация
+  target.classList.add("fade-out");
+
+  // Пускаме звук
+  const audio = new Audio("pop.mp3");
+  audio.volume = 0.5;
+  audio.play();
+
+  // Премахваме елемента след анимацията
+  setTimeout(() => target.remove(), 400);
+};
+
 
   aimArea.appendChild(target);
 
@@ -475,3 +486,4 @@ function sendMessage() {
 window.sendMessage = sendMessage;
 
 console.log("✅ script.js зареден успешно");
+
