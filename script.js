@@ -400,3 +400,4 @@ function sendMessage() {
 }
 
 window.sendMessage = sendMessage;
+console.log("SCRIPT LOADED");
