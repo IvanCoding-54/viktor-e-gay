@@ -377,15 +377,18 @@ body.alt-theme .rgb-bg {
 /* Falling flags */
 .flag {
   position: absolute;
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-size: 14px;
+  width: 90px;          /* еднакъв размер за всички */
+  text-align: center;
+  padding: 14px 18px;   /* по-голям и точен hitbox */
+  border-radius: 8px;
+  font-size: 16px;
   font-weight: bold;
   color: white;
   cursor: pointer;
   user-select: none;
-  box-shadow: 0 0 10px rgba(255,255,255,0.4);
+  box-shadow: 0 0 12px rgba(255,255,255,0.5);
 }
+
 
 /* Flag colors */
 .flag.lgbt {
@@ -601,6 +604,15 @@ body.rgb {
   box-shadow: 0 0 18px rgba(255, 0, 128, 0.5),
               0 0 28px rgba(0, 255, 255, 0.4);
 }
+.flag-timer {
+  font-size: 18px;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 6px;
+  font-weight: bold;
+  text-shadow: 0 0 10px #00eaff;
+}
+
 
 
 
