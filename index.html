@@ -39,7 +39,6 @@
     </nav>
 
     <main class="content">
-
       <!-- HOME -->
       <section id="home" class="tab active-tab card card-glow reveal">
         <h1 class="title-glow">Добре дошли в света на Виктор</h1>
@@ -80,6 +79,7 @@
         <p>Гордостта не е само в парадите. Тя е в ежедневните избори — да обичаш себе си, да се изправиш срещу омразата, да бъдеш видим, когато светът иска да те скрие.</p>
         <p>Виктор вярва, че гордостта е акт на любов. Към себе си. Към общността. Към бъдещето. Тя е обещание, че никой няма да бъде оставен сам.</p>
       </section>
+
       <!-- FEMBOY -->
       <section id="femboy" class="tab card card-glow-pink reveal">
         <h1 class="section-title">Femboy Виктор 💗</h1>
@@ -107,7 +107,6 @@
           <li class="fact-item"><span class="fact-main">Обича драма, но само когато е истинска и красива.</span></li>
           <li class="fact-item"><span class="fact-main">Мрази скуката — тя е враг на творчеството.</span></li>
         </ul>
-
         <!-- MINI CLICK GAME -->
         <div class="game-box">
           <h2 class="game-title">Мини игра: Кликни Виктор</h2>
@@ -144,7 +143,6 @@
 
         <p>Искаш да споделиш нещо с Виктор? Да му разкажеш своята история? Или просто да кажеш „здравей“?</p>
         <p>Тук си добре дошъл. Без маски. Без страх. Само ти — такъв, какъвто си. Виктор вярва, че всяка история заслужава да бъде чута, всяко чувство — уважено, всяка истина — приета.</p>
-        <p>Пиши му. Той е тук — за теб, за думите ти, за тишината ти, за всичко, което носиш в себе си.</p>
 
         <div class="chat-box">
           <h2 class="chat-title">AI чат с Виктор</h2>
@@ -157,6 +155,7 @@
           </div>
         </div>
       </section>
+
       <!-- GAMES -->
       <section id="games" class="tab card card-border reveal">
         <h1 class="section-title">VIKTOR ARCADE 🎮</h1>
@@ -178,15 +177,17 @@
 
           <div id="aim-area" class="aim-area"></div>
         </div>
+
         <div class="leaderboard"> 
           <h3 class="leaderboard-title">Aim Trainer Класация</h3> 
-          <ol id="aim-leaderboard-list"></ol>
+          <ol id="aim-leaderboard-list">
+            <li>Зареждане на резултати...</li>
+          </ol>
         </div>
       </section>
 
     </main>
   </div>
-
   <!-- POPUP OVERLAY FOR RAINBOW CATCH -->
   <div id="flag-game-overlay" class="flag-game-overlay">
     <div class="flag-game-window">
@@ -231,6 +232,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // Rainbow Catch класация
     window.saveScore = async function(name, score) {
       await addDoc(collection(db, "leaderboard"), {
         name: name,
@@ -249,9 +251,30 @@
       const snapshot = await getDocs(q);
       return snapshot.docs.map(doc => doc.data());
     }
+
+    // Aim Trainer класация
+    window.saveAimScore = async function(name, score) {
+      if (!name || name.trim() === "") return;
+      await addDoc(collection(db, "aim_scores"), {
+        name: name.trim(),
+        score: score,
+        timestamp: Date.now()
+      });
+    }
+
+    window.loadAimLeaderboard = async function() {
+      const q = query(
+        collection(db, "aim_scores"),
+        orderBy("score", "desc"),
+        limit(10)
+      );
+
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map(doc => doc.data());
+    }
   </script>
 
+  <!-- MAIN SCRIPT -->
   <script src="script.js"></script>
 </body>
 </html>
-
