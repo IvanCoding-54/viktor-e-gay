@@ -346,19 +346,25 @@ function spawnFlag() {
 
   // При клик — премахване и точка
   flag.onclick = () => {
-    if (flag.classList.contains("clicked")) return;
-    flag.classList.add("clicked");
+  if (flag.classList.contains("clicked")) return;
+  flag.classList.add("clicked");
 
-    score++;
-    updateScoreDisplay();
+  score++;
+  updateScoreDisplay();
 
-    const audio = new Audio("pop.mp3");
-    audio.volume = 0.5;
-    audio.play();
+  const audio = new Audio("pop.mp3");
+  audio.volume = 0.5;
+  audio.play();
 
+  // Добави клас за анимация
+  flag.classList.add("fade-out");
+
+  // Изчакай анимацията и тогава премахни флага
+  setTimeout(() => {
     flag.remove();
-  };
-}
+  }, 400); // трябва да съвпада с продължителността на анимацията в CSS
+};
+
 
 
 function createFlag() {
@@ -515,6 +521,7 @@ function sendMessage() {
 window.sendMessage = sendMessage;
 
 console.log("✅ script.js зареден успешно");
+
 
 
 
