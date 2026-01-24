@@ -399,6 +399,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById('flag-game-start').addEventListener('click', openFlagGame);
 
   renderLeaderboard();
+  renderAimLeaderboard();
 });
 
 /* ============================
@@ -485,4 +486,5 @@ function sendMessage() {
 window.sendMessage = sendMessage;
 
 console.log("SCRIPT LOADED ✔");
+
 
