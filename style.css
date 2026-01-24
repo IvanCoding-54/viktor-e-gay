@@ -553,3 +553,13 @@ p {
 .tab.active-tab {
   display: block !important;
 }
+/* Скриваме overlay по подразбиране */
+#flag-game-overlay {
+  display: none;
+}
+
+/* Показваме overlay само ако табът Факти е активен */
+#facts.active-tab ~ #flag-game-overlay {
+  display: flex;
+}
+
