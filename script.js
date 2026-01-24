@@ -365,22 +365,7 @@ function createFlag() {
   flagGameArea.appendChild(div);
 }
 
-function updateFlags() {
-  const height = flagGameArea.clientHeight;
 
-  flags.forEach(f => {
-    f.y += f.speed;
-    f.el.style.top = `${f.y}px`;
-  });
-
-  flags = flags.filter(f => {
-    if (f.y > height + 40) {
-      f.el.remove();
-      return false;
-    }
-    return true;
-  });
-}
 
 async function endFlagGame() {
   const name = prompt(`Играта свърши! Точки: ${flagScore}\nВъведи име:`);
@@ -495,5 +480,6 @@ function sendMessage() {
 window.sendMessage = sendMessage;
 
 console.log("✅ script.js зареден успешно");
+
 
 
