@@ -117,7 +117,7 @@
         </p>
       </section>
 
-      <!-- FACTS + MINI GAME -->
+      <!-- FACTS + MINI GAME + FLAG GAME -->
       <section id="facts" class="tab card card-border reveal">
         <h1 class="section-title">Факти за Виктор ✨</h1>
 
@@ -154,6 +154,21 @@
             <span>Време: <span id="game-time">0</span>s</span>
           </div>
         </div>
+
+        <div class="game-box flag-game-box">
+          <h2 class="game-title">Rainbow Catch 🏳️‍🌈</h2>
+          <p class="game-text">
+            Натисни „Старт“, хващай LGBTQ+ знамената и внимавай да не кликнеш straight знамето!
+          </p>
+          <button id="flag-game-start" class="game-btn">Старт Rainbow Catch</button>
+
+          <div class="leaderboard">
+            <h3 class="leaderboard-title">Класация</h3>
+            <ol id="leaderboard-list" class="leaderboard-list">
+              <!-- динамично -->
+            </ol>
+          </div>
+        </div>
       </section>
 
       <!-- CONTACT + AI CHAT -->
@@ -165,7 +180,7 @@
         </p>
 
         <p class="contact-number">BG +359 / 088 424 8702</p>
-        <p class="contact-note">(Това е част Виктор.)</p>
+        <p class="contact-note">(Това е част от Виктор.)</p>
 
         <div class="chat-box">
           <h2 class="chat-title">AI чат с Виктор</h2>
@@ -181,6 +196,20 @@
 
     </main>
 
+  </div>
+
+  <!-- FLAG GAME OVERLAY -->
+  <div id="flag-game-overlay" class="flag-game-overlay">
+    <div class="flag-game-window">
+      <div class="flag-game-header">
+        <span>Rainbow Catch 🏳️‍🌈</span>
+        <button class="flag-game-close" onclick="closeFlagGame()">✕</button>
+      </div>
+      <div class="flag-game-info">
+        <span>Точки: <span id="flag-score">0</span></span>
+      </div>
+      <div id="flag-game-area" class="flag-game-area"></div>
+    </div>
   </div>
 
   <script src="script.js"></script>
