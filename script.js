@@ -209,7 +209,7 @@ function startFlagGame() {
   }
 }, 1000);
 
-  flagSpawnInterval = setInterval(spawnFlag, 300);
+  flagSpawnInterval = setInterval(spawnFlag, 225);
   flagFallInterval = setInterval(updateFlags, 40);
 }
 
@@ -229,6 +229,14 @@ function stopFlagGame(triggerEnd = true) {
 function spawnFlag() {
   if (!flagGameRunning || !flagGameArea) return;
 
+  // Колко флага да се spawn-ват наведнъж
+  const count = 2; // смени на 3, 4, 5...
+
+  for (let i = 0; i < count; i++) {
+    createFlag();
+  }
+}
+function createFlag() {
   const width = flagGameArea.clientWidth || 300;
   const x = Math.random() * (width - 70);
 
@@ -270,6 +278,7 @@ function spawnFlag() {
   flags.push(flagObj);
   flagGameArea.appendChild(div);
 }
+
 
 function updateFlags() {
   if (!flagGameRunning || !flagGameArea) return;
@@ -428,6 +437,7 @@ function setTheme(theme) {
   body.classList.add(theme);
   document.getElementById("theme-menu").classList.remove("visible");
 }
+
 
 
 
