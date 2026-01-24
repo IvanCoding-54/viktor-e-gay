@@ -45,7 +45,7 @@ factItems.forEach(item => {
   });
 });
 
-/* MINI GAME */
+/* MINI GAME: CLICK GAME */
 let gameScore = 0;
 let gameTime = 0;
 let gameInterval = null;
@@ -91,9 +91,155 @@ if (gameStartBtn) {
   });
 }
 
-/* FAKE AI CHAT */
+/* FLAG GAME: RAINBOW CATCH */
 
-// Основни отговори
+let flagGameRunning = false;
+let flagScore = 0;
+let flagSpawnInterval = null;
+let flagFallInterval = null;
+let flags = [];
+let leaderboard = [];
+
+const flagGameOverlay = document.getElementById('flag-game-overlay');
+const flagGameArea = document.getElementById('flag-game-area');
+const flagScoreEl = document.getElementById('flag-score');
+const flagGameStartBtn = document.getElementById('flag-game-start');
+const leaderboardList = document.getElementById('leaderboard-list');
+
+const flagTypes = [
+  { type: 'lgbt', label: 'LGBTQ+' },
+  { type: 'bi', label: 'BI' },
+  { type: 'trans', label: 'TRANS' },
+  { type: 'pan', label: 'PAN' },
+  { type: 'straight', label: 'STRAIGHT' }
+];
+
+function openFlagGame() {
+  if (!flagGameOverlay || !flagGameArea) return;
+  flagGameOverlay.classList.add('active');
+  startFlagGame();
+}
+
+function closeFlagGame() {
+  if (!flagGameOverlay) return;
+  stopFlagGame(false);
+  flagGameOverlay.classList.remove('active');
+}
+
+if (flagGameStartBtn) {
+  flagGameStartBtn.addEventListener('click', openFlagGame);
+}
+
+function startFlagGame() {
+  flagGameRunning = true;
+  flagScore = 0;
+  flagScoreEl.textContent = flagScore;
+  flags = [];
+  flagGameArea.innerHTML = '';
+
+  flagSpawnInterval = setInterval(spawnFlag, 700);
+  flagFallInterval = setInterval(updateFlags, 40);
+}
+
+function stopFlagGame(triggerEnd = true) {
+  flagGameRunning = false;
+  clearInterval(flagSpawnInterval);
+  clearInterval(flagFallInterval);
+  flags = [];
+  if (flagGameArea) flagGameArea.innerHTML = '';
+
+  if (triggerEnd) {
+    endFlagGame();
+  }
+}
+
+function spawnFlag() {
+  if (!flagGameRunning || !flagGameArea) return;
+
+  const width = flagGameArea.clientWidth;
+  const x = Math.random() * (width - 70);
+
+  const isStraight = Math.random() < 0.2; // 20% шанс да е straight
+  const goodFlags = flagTypes.filter(f => f.type !== 'straight');
+  const chosen = isStraight
+    ? flagTypes.find(f => f.type === 'straight')
+    : goodFlags[Math.floor(Math.random() * goodFlags.length)];
+
+  const div = document.createElement('div');
+  div.classList.add('flag', chosen.type);
+  div.style.left = `${x}px`;
+  div.dataset.type = chosen.type;
+  div.textContent = chosen.label;
+
+  const flagObj = {
+    el: div,
+    y: -40,
+    speed: 2 + Math.random() * 2
+  };
+
+  div.addEventListener('click', () => {
+    if (!flagGameRunning) return;
+    if (div.dataset.type === 'straight') {
+      stopFlagGame(true);
+    } else {
+      flagScore++;
+      flagScoreEl.textContent = flagScore;
+      flagGameArea.removeChild(div);
+      flags = flags.filter(f => f !== flagObj);
+    }
+  });
+
+  flags.push(flagObj);
+  flagGameArea.appendChild(div);
+}
+
+function updateFlags() {
+  if (!flagGameRunning || !flagGameArea) return;
+
+  const height = flagGameArea.clientHeight;
+
+  flags.forEach(f => {
+    f.y += f.speed;
+    f.el.style.top = `${f.y}px`;
+  });
+
+  flags = flags.filter(f => {
+    if (f.y > height + 40) {
+      if (f.el.dataset.type !== 'straight') {
+        // изпуснато добро знаме – не губиш, просто го махаме
+      }
+      if (flagGameArea.contains(f.el)) {
+        flagGameArea.removeChild(f.el);
+      }
+      return false;
+    }
+    return true;
+  });
+}
+
+function endFlagGame() {
+  const name = prompt(`Играта свърши! Точки: ${flagScore}\nВъведи име за класацията:`);
+  if (!name) return;
+
+  leaderboard.push({ name: name.trim(), score: flagScore });
+  leaderboard.sort((a, b) => b.score - a.score);
+
+  renderLeaderboard();
+}
+
+function renderLeaderboard() {
+  if (!leaderboardList) return;
+  leaderboardList.innerHTML = '';
+
+  leaderboard.forEach(entry => {
+    const li = document.createElement('li');
+    li.textContent = `${entry.name} – ${entry.score} дъги`;
+    leaderboardList.appendChild(li);
+  });
+}
+
+/* FAKE AI CHAT – ПО-УМЕН */
+
 const aiRepliesDefault = [
   "Разбирам те. Това, което чувстваш, има значение.",
   "Интересно е как го описваш. Кажи ми още.",
@@ -104,35 +250,49 @@ const aiRepliesDefault = [
   "Понякога просто е нужно някой да те чуе."
 ];
 
-// Отговори по ключови думи
 const aiRepliesByKeyword = [
   {
-    keywords: ["sad", "тъжен", "тъжно", "депрес", "сам"],
+    keywords: ["sad", "тъжен", "тъжно", "депрес", "сам", "самота"],
     replies: [
       "Звучи тежко. Дори да се чувстваш сам, това, което носиш в себе си, е важно.",
       "Понякога е окей да не си окей. Не си длъжен да си силен през цялото време.",
-      "Това, че се чувстваш така, не те прави слаб. Прави те истински."
+      "Това, че се чувстваш така, не те прави слаб. Прави те истински. Как би описал това чувство с една дума?"
     ]
   },
   {
-    keywords: ["gay", "гей", "сексуалност", "ориентация"],
+    keywords: ["gay", "гей", "сексуалност", "ориентация", "лгбт", "lgbt"],
     replies: [
       "Сексуалността ти не е проблем за оправяне, а част от това кой си.",
       "Няма нищо грешно в това кого обичаш. Точка.",
-      "Да си гей не те прави по-малко ценен. Напротив – прави те по-истински."
+      "Да си гей не те прави по-малко ценен. Напротив – прави те по-истински. Как се чувстваш с това днес?"
     ]
   },
   {
-    keywords: ["различен", "странен", "weird"],
+    keywords: ["различен", "странен", "weird", "не като другите"],
     replies: [
       "Различното често е най-интересното нещо в един човек.",
       "Ако всички бяхме еднакви, щеше да е ужасно скучно.",
-      "Твоето „различно“ е точно това, което те прави запомнящ се."
+      "Твоето „различно“ е точно това, което те прави запомнящ се. В какво най-много се усещаш различен?"
+    ]
+  },
+  {
+    keywords: ["страх", "уплашен", "притеснен", "тревожен"],
+    replies: [
+      "Страхът е нормална реакция, особено когато си честен със себе си.",
+      "Можеш да си уплашен и смел едновременно. Това, че продължаваш, вече е сила.",
+      "От какво те е най-много страх в момента?"
+    ]
+  },
+  {
+    keywords: ["щастлив", "добре", "радост", "яко"],
+    replies: [
+      "Радвам се, че се чувстваш така. Разкажи ми какво те направи щастлив.",
+      "Тези моменти са важни. Запомни ги – те ти напомнят защо си струва.",
+      "Обичам да чувам за хубавите неща. Какво точно ти донесе това чувство?"
     ]
   }
 ];
 
-// Функция за избор на отговор
 function getAiReply(userText) {
   const lower = userText.toLowerCase();
 
@@ -142,10 +302,13 @@ function getAiReply(userText) {
     }
   }
 
+  if (lower.endsWith("?")) {
+    return "Хубав въпрос. Какво е твоето усещане за отговора?";
+  }
+
   return aiRepliesDefault[Math.floor(Math.random() * aiRepliesDefault.length)];
 }
 
-/* SEND MESSAGE */
 function sendMessage() {
   const input = document.getElementById("chat-input");
   const messages = document.getElementById("chat-messages");
@@ -154,7 +317,6 @@ function sendMessage() {
   const text = input.value.trim();
   if (!text) return;
 
-  // Показваме твоето съобщение
   const userMsg = document.createElement("div");
   userMsg.classList.add("chat-message", "user");
   userMsg.textContent = text;
@@ -163,14 +325,12 @@ function sendMessage() {
   input.value = "";
   messages.scrollTop = messages.scrollHeight;
 
-  // typing animation
   const typing = document.createElement("div");
   typing.classList.add("typing");
   typing.textContent = "Виктор пише...";
   messages.appendChild(typing);
   messages.scrollTop = messages.scrollHeight;
 
-  // AI отговор
   const replyText = getAiReply(text);
 
   setTimeout(() => {
@@ -184,3 +344,7 @@ function sendMessage() {
     messages.scrollTop = messages.scrollHeight;
   }, 900);
 }
+
+/* expose for inline onclick */
+window.sendMessage = sendMessage;
+window.closeFlagGame = closeFlagGame;
