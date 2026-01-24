@@ -115,54 +115,6 @@ body.alt-theme .rgb-bg {
   cursor: pointer;
   transition: background 0.15s ease, transform 0.15s ease;
 }
-/* THEME MENU */
-.theme-menu {
-  position: absolute;
-  top: 60px;
-  right: 20px;
-  background: rgba(15, 15, 25, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 12px;
-  border-radius: 14px;
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-  backdrop-filter: blur(12px);
-  z-index: 999999;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  opacity: 0; 
-  transform: translateY(-10px);
-  transition: opacity 0.3s ease, transform 0.3s ease; 
-  pointer-events: none;
-}
-
-.theme-menu button {
-  background: radial-gradient(circle at 0 0, #ff006a, transparent 60%),
-              radial-gradient(circle at 100% 100%, #00f0ff, transparent 60%);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 8px 14px;
-  border-radius: 999px;
-  font-size: 13px;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
-  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
-}
-
-.theme-menu button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 0 18px rgba(255, 0, 128, 0.5),
-              0 0 28px rgba(0, 255, 255, 0.4);
-}
-.theme-menu.visible { 
-   opacity: 1; 
-   transform: translateY(0); 
-   pointer-events: auto; 
-}
-.theme-menu.hidden {
-  display: none;
-}
-
 /* CONTENT */
 .content {
   margin-top: 10px;
@@ -603,6 +555,51 @@ body.dark {
 body.rgb {
   background: linear-gradient(45deg, red, green, blue);
   color: white;
+}
+
+.theme-menu {
+  position: absolute;
+  top: 60px;
+  right: 20px;
+  background: rgba(15, 15, 25, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 12px;
+  border-radius: 14px;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+  backdrop-filter: blur(12px);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+}
+
+.theme-menu.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.theme-menu button {
+  background: radial-gradient(circle at 0 0, #ff006a, transparent 60%),
+              radial-gradient(circle at 100% 100%, #00f0ff, transparent 60%);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.theme-menu button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 18px rgba(255, 0, 128, 0.5),
+              0 0 28px rgba(0, 255, 255, 0.4);
 }
 
 
