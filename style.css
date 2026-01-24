@@ -115,7 +115,33 @@ body.alt-theme .rgb-bg {
   cursor: pointer;
   transition: background 0.15s ease, transform 0.15s ease;
 }
+/* THEME MENU */
+.theme-menu {
+  position: absolute;
+  top: 60px;
+  right: 20px;
+  background: #222;
+  border: 1px solid #555;
+  padding: 10px;
+  border-radius: 8px;
+  z-index: 100;
+}
 
+.theme-menu button {
+  display: block;
+  width: 100%;
+  margin: 5px 0;
+  background: #333;
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.theme-menu.hidden {
+  display: none;
+}
 .theme-toggle:hover {
   background: rgba(40,40,60,0.9);
   transform: translateY(-1px);
@@ -547,6 +573,7 @@ body.alt-theme .rgb-bg {
   margin-top: -25px;
   margin-right: 10px;
 }
+
 
 
 
