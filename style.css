@@ -552,30 +552,3 @@ p {
     #d60270 0%,
     #9b4f96 50%,
     #0038a8 100%
-  );
-}
-
-.flag.trans {
-  background: linear-gradient(
-    to bottom,
-    #5bcffa 0%,
-    #f5abb9 25%,
-    #ffffff 50%,
-    #f5abb9 75%,
-    #5bcffa 100%
-  );
-}
-
-.flag.pan {
-  background: linear-gradient(
-/* FORCE TAB SYSTEM TO WORK */
-section.tab {
-  display: none !important;
-}
-
-section.tab.active-tab {
-  display: block !important;
-}
-
-
-
