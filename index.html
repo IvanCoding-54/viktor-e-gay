@@ -11,7 +11,7 @@
   <div class="app">
 
     <nav class="navbar">
-      <h2 class="logo">VIKTOR.RGB</h2>
+      <h2 class="logo">VIKTOR</h2>
       <div class="tabs">
         <button class="tab-btn active" onclick="openTab('home', this)">Начало</button>
         <button class="tab-btn" onclick="openTab('who', this)">Кой е Виктор</button>
@@ -21,7 +21,12 @@
         <button class="tab-btn" onclick="openTab('facts', this)">Факти</button>
         <button class="tab-btn" onclick="openTab('contact', this)">Контакт</button>
       </div>
-      <button class="theme-toggle" onclick="toggleTheme()">Смени тема</button>
+      <button class="theme-toggle" onclick="toggleThemeMenu()">Смени тема</button>
+      <div id="theme-menu" class="theme-menu hidden">
+        <button onclick="setTheme('light')">Светла тема</button>
+        <button onclick="setTheme('dark')">Тъмна тема</button>
+        <button onclick="setTheme('rgb')">RGB тема</button>
+      </div>
     </nav>
 
     <main class="content">
@@ -215,3 +220,4 @@
   <script src="script.js"></script>
 </body>
 </html>
+
