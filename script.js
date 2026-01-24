@@ -103,8 +103,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let interval = null;
   let running = false;
 
-  const btn = document.getElementById('game-start');
-  const scoreEl = document.getElementById('game-score');
+  const btn = ('game-start');
+  const scoreEl = ('game-score');
   const timeEl = document.getElementById('game-time');
 
   if (!btn) return;
@@ -194,30 +194,29 @@ document.getElementById("aim-start").onclick = async () => {
   clearInterval(aimInterval);
   clearInterval(aimSpawnInterval);
 
-  aimInterval = setInterval(() => {
+  aimInterval = setInterval(async () => {
     aimTime--;
     document.getElementById("aim-time").textContent = aimTime;
 
     if (aimTime <= 0) {
-  clearInterval(aimInterval);
-  clearInterval(aimSpawnInterval);
+      clearInterval(aimInterval);
+      clearInterval(aimSpawnInterval);
 
-  const name = prompt("Край! Твоят резултат: " + aimScore + "\nВъведи име:");
-  if (name) {
-    try {
-      await saveScore(name, aimScore);
-      await renderLeaderboard();
-    } catch (e) {
-      console.error("Грешка при запис на резултат:", e);
+      const name = prompt("Край! Твоят резултат: " + aimScore + "\nВъведи име:");
+      if (name) {
+        try {
+          await saveScore(name, aimScore);
+          await renderLeaderboard();
+        } catch (e) {
+          console.error("Грешка при запис:", e);
+        }
+      }
     }
-  }
-}
-
-
   }, 1000);
 
   aimSpawnInterval = setInterval(spawnAimTarget, 450);
 };
+
 
 /* ============================
    RAINBOW CATCH — POPUP VERSION (A)
@@ -454,4 +453,5 @@ function sendMessage() {
 window.sendMessage = sendMessage;
 
 console.log("SCRIPT LOADED ✔");
+
 
