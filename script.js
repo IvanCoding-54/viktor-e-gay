@@ -10,11 +10,16 @@ async function renderLeaderboard() {
 
   const entries = await loadLeaderboard();
 
-  entries.forEach((entry, i) => { 
-     const li = document.createElement("li"); 
-     li.setAttribute("data-rank", i + 1); 
-     li.textContent = `${entry.name} – ${entry.score} точки`; 
-     list.appendChild(li); 
+  entries.forEach((entry, i) => {
+    const li = document.createElement("li");
+    li.setAttribute("data-rank", i + 1);
+    li.textContent = `${entry.name} – ${entry.score} точки`;
+
+    if (i === 0) li.classList.add("rank-1");
+    if (i === 1) li.classList.add("rank-2");
+    if (i === 2) li.classList.add("rank-3");
+
+    list.appendChild(li);
   });
 }
 
@@ -348,8 +353,6 @@ function sendMessage() {
 window.sendMessage = sendMessage;
 window.closeFlagGame = closeFlagGame;
 
-document.addEventListener("DOMContentLoaded", () => { 
-   renderLeaderboard(); 
+document.addEventListener("DOMContentLoaded", () => {
+  renderLeaderboard();
 });
-
-
