@@ -408,9 +408,12 @@ function toggleThemeMenu() {
 }
 
 function setTheme(theme) {
-  document.body.className = "";
-  document.body.classList.add(theme);
-  document.getElementById("theme-menu").classList.add("hidden");
+  const body = document.body;
+  body.classList.remove("light", "dark", "rgb");
+  body.classList.add(theme);
+  document.getElementById("theme-menu").classList.remove("visible");
 }
+
+
 
 
