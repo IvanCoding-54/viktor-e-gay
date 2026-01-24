@@ -401,3 +401,15 @@ function sendMessage() {
 
 window.sendMessage = sendMessage;
 console.log("SCRIPT LOADED");
+
+function toggleThemeMenu() {
+  const menu = document.getElementById("theme-menu");
+  menu.classList.toggle("hidden");
+}
+
+function setTheme(theme) {
+  document.body.className = "";
+  document.body.classList.add(theme);
+  document.getElementById("theme-menu").classList.add("hidden");
+}
+
