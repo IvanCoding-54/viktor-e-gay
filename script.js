@@ -404,7 +404,7 @@ console.log("SCRIPT LOADED");
 
 function toggleThemeMenu() {
   const menu = document.getElementById("theme-menu");
-  menu.classList.toggle("hidden");
+  menu.classList.toggle("visible");
 }
 
 function setTheme(theme) {
@@ -412,4 +412,5 @@ function setTheme(theme) {
   document.body.classList.add(theme);
   document.getElementById("theme-menu").classList.add("hidden");
 }
+
 
