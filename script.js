@@ -4,23 +4,27 @@
 
 async function renderLeaderboard() {
   const list = document.getElementById("leaderboard-list");
-  if (!list) return;
+  if (!list || typeof loadLeaderboard !== "function") return;
 
   list.innerHTML = "";
 
-  const entries = await loadLeaderboard();
+  try {
+    const entries = await loadLeaderboard();
 
-  entries.forEach((entry, i) => {
-    const li = document.createElement("li");
-    li.setAttribute("data-rank", i + 1);
-    li.textContent = `${entry.name} – ${entry.score} точки`;
+    entries.forEach((entry, i) => {
+      const li = document.createElement("li");
+      li.setAttribute("data-rank", i + 1);
+      li.textContent = `${entry.name} – ${entry.score} точки`;
 
-    if (i === 0) li.classList.add("rank-1");
-    if (i === 1) li.classList.add("rank-2");
-    if (i === 2) li.classList.add("rank-3");
+      if (i === 0) li.classList.add("rank-1");
+      if (i === 1) li.classList.add("rank-2");
+      if (i === 2) li.classList.add("rank-3");
 
-    list.appendChild(li);
-  });
+      list.appendChild(li);
+    });
+  } catch (e) {
+    console.error("Грешка при зареждане на класацията:", e);
+  }
 }
 
 /* ============================
@@ -34,14 +38,18 @@ function openTab(tabName, btn) {
   tabs.forEach(tab => tab.classList.remove('active-tab'));
   buttons.forEach(b => b.classList.remove('active'));
 
-  document.getElementById(tabName).classList.add('active-tab');
+  const activeSection = document.getElementById(tabName);
+  if (!activeSection) return;
+
+  activeSection.classList.add('active-tab');
   btn.classList.add('active');
 
-  const activeSection = document.getElementById(tabName);
   if (activeSection.classList.contains('reveal')) {
     activeSection.classList.add('visible');
   }
 }
+
+window.openTab = openTab;
 
 /* ============================
    THEME SWITCH
@@ -51,34 +59,40 @@ function toggleTheme() {
   document.body.classList.toggle('alt-theme');
 }
 
+window.toggleTheme = toggleTheme;
+
 /* ============================
    REVEAL ON SCROLL
 ============================ */
 
-const revealElements = document.querySelectorAll('.reveal');
+document.addEventListener("DOMContentLoaded", () => {
+  const revealElements = document.querySelectorAll('.reveal');
 
-const observer = new IntersectionObserver(
-  entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
-    });
-  },
-  { threshold: 0.2 }
-);
+  const observer = new IntersectionObserver(
+    entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    },
+    { threshold: 0.2 }
+  );
 
-revealElements.forEach(el => observer.observe(el));
+  revealElements.forEach(el => observer.observe(el));
+});
 
 /* ============================
    INTERACTIVE FACTS
 ============================ */
 
-const factItems = document.querySelectorAll('.fact-item');
+document.addEventListener("DOMContentLoaded", () => {
+  const factItems = document.querySelectorAll('.fact-item');
 
-factItems.forEach(item => {
-  item.addEventListener('click', () => {
-    item.classList.toggle('expanded');
+  factItems.forEach(item => {
+    item.addEventListener('click', () => {
+      item.classList.toggle('expanded');
+    });
   });
 });
 
@@ -86,16 +100,18 @@ factItems.forEach(item => {
    MINI CLICK GAME
 ============================ */
 
-let gameScore = 0;
-let gameTime = 0;
-let gameInterval = null;
-let gameRunning = false;
+document.addEventListener("DOMContentLoaded", () => {
+  let gameScore = 0;
+  let gameTime = 0;
+  let gameInterval = null;
+  let gameRunning = false;
 
-const gameStartBtn = document.getElementById('game-start');
-const gameScoreEl = document.getElementById('game-score');
-const gameTimeEl = document.getElementById('game-time');
+  const gameStartBtn = document.getElementById('game-start');
+  const gameScoreEl = document.getElementById('game-score');
+  const gameTimeEl = document.getElementById('game-time');
 
-if (gameStartBtn) {
+  if (!gameStartBtn || !gameScoreEl || !gameTimeEl) return;
+
   gameStartBtn.addEventListener('click', () => {
     if (gameRunning) return;
 
@@ -129,7 +145,7 @@ if (gameStartBtn) {
       }
     }, 1000);
   });
-}
+});
 
 /* ============================
    FLAG GAME (RAINBOW CATCH)
@@ -141,11 +157,6 @@ let flagSpawnInterval = null;
 let flagFallInterval = null;
 let flags = [];
 
-const flagGameOverlay = document.getElementById('flag-game-overlay');
-const flagGameArea = document.getElementById('flag-game-area');
-const flagScoreEl = document.getElementById('flag-score');
-const flagGameStartBtn = document.getElementById('flag-game-start');
-
 const flagTypes = [
   { type: 'lgbt', label: 'LGBTQ+' },
   { type: 'bi', label: 'BI' },
@@ -154,21 +165,30 @@ const flagTypes = [
   { type: 'straight', label: 'STRAIGHT' }
 ];
 
+let flagGameOverlay;
+let flagGameArea;
+let flagScoreEl;
+let flagGameStartBtn;
+
 function openFlagGame() {
+  if (!flagGameOverlay || !flagGameArea || !flagScoreEl) return;
+
   flagGameOverlay.classList.add('active');
   startFlagGame();
 }
 
 function closeFlagGame() {
   stopFlagGame(false);
-  flagGameOverlay.classList.remove('active');
+  if (flagGameOverlay) {
+    flagGameOverlay.classList.remove('active');
+  }
 }
 
-if (flagGameStartBtn) {
-  flagGameStartBtn.addEventListener('click', openFlagGame);
-}
+window.closeFlagGame = closeFlagGame;
 
 function startFlagGame() {
+  if (!flagGameArea || !flagScoreEl) return;
+
   flagGameRunning = true;
   flagScore = 0;
   flagScoreEl.textContent = flagScore;
@@ -184,15 +204,17 @@ function stopFlagGame(triggerEnd = true) {
   clearInterval(flagSpawnInterval);
   clearInterval(flagFallInterval);
   flags = [];
-  flagGameArea.innerHTML = '';
+  if (flagGameArea) {
+    flagGameArea.innerHTML = '';
+  }
 
   if (triggerEnd) endFlagGame();
 }
 
 function spawnFlag() {
-  if (!flagGameRunning) return;
+  if (!flagGameRunning || !flagGameArea) return;
 
-  const width = flagGameArea.clientWidth;
+  const width = flagGameArea.clientWidth || 300;
   const x = Math.random() * (width - 70);
 
   const isStraight = Math.random() < 0.2;
@@ -220,8 +242,12 @@ function spawnFlag() {
       stopFlagGame(true);
     } else {
       flagScore++;
-      flagScoreEl.textContent = flagScore;
-      flagGameArea.removeChild(div);
+      if (flagScoreEl) {
+        flagScoreEl.textContent = flagScore;
+      }
+      if (flagGameArea.contains(div)) {
+        flagGameArea.removeChild(div);
+      }
       flags = flags.filter(f => f !== flagObj);
     }
   });
@@ -231,9 +257,9 @@ function spawnFlag() {
 }
 
 function updateFlags() {
-  if (!flagGameRunning) return;
+  if (!flagGameRunning || !flagGameArea) return;
 
-  const height = flagGameArea.clientHeight;
+  const height = flagGameArea.clientHeight || 320;
 
   flags.forEach(f => {
     f.y += f.speed;
@@ -255,15 +281,38 @@ async function endFlagGame() {
   const name = prompt(`Играта свърши! Точки: ${flagScore}\nВъведи име:`);
 
   if (!name) {
-    flagGameOverlay.classList.remove("active");
+    if (flagGameOverlay) {
+      flagGameOverlay.classList.remove("active");
+    }
     return;
   }
 
-  await saveScore(name, flagScore);
-  await renderLeaderboard();
+  if (typeof saveScore === "function") {
+    try {
+      await saveScore(name, flagScore);
+      await renderLeaderboard();
+    } catch (e) {
+      console.error("Грешка при запис на резултат:", e);
+    }
+  }
 
-  flagGameOverlay.classList.remove("active");
+  if (flagGameOverlay) {
+    flagGameOverlay.classList.remove("active");
+  }
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  flagGameOverlay = document.getElementById('flag-game-overlay');
+  flagGameArea = document.getElementById('flag-game-area');
+  flagScoreEl = document.getElementById('flag-score');
+  flagGameStartBtn = document.getElementById('flag-game-start');
+
+  if (flagGameStartBtn) {
+    flagGameStartBtn.addEventListener('click', openFlagGame);
+  }
+
+  renderLeaderboard();
+});
 
 /* ============================
    AI CHAT
@@ -351,8 +400,3 @@ function sendMessage() {
 }
 
 window.sendMessage = sendMessage;
-window.closeFlagGame = closeFlagGame;
-
-document.addEventListener("DOMContentLoaded", () => {
-  renderLeaderboard();
-});
