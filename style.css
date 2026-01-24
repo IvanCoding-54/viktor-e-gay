@@ -343,24 +343,63 @@ p {
   color: #c0ffc0;
 }
 
-/* LEADERBOARD */
+/* ============================
+   LEADERBOARD — NEW STYLE
+============================ */
 
 .leaderboard {
-  margin-top: 10px;
-  padding-top: 6px;
-  border-top: 1px solid rgba(255,255,255,0.12);
+  margin-top: 20px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 20px rgba(255, 0, 200, 0.3);
 }
 
 .leaderboard-title {
-  font-size: 14px;
-  margin-bottom: 4px;
+  font-size: 1.6rem;
+  margin-bottom: 12px;
+  text-align: center;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 0 10px #ff00ff;
 }
 
-.leaderboard-list {
-  list-style: decimal;
-  padding-left: 18px;
-  font-size: 13px;
+#leaderboard-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
+
+#leaderboard-list li {
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  font-size: 1.2rem;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  border-left: 4px solid #ff00ff;
+  transition: transform 0.2s, background 0.2s;
+}
+
+#leaderboard-list li:hover {
+  transform: translateX(6px);
+  background: rgba(255, 0, 200, 0.25);
+}
+
+#leaderboard-list li::before {
+  content: attr(data-rank) ".";
+  font-weight: bold;
+  margin-right: 10px;
+  color: #ff66ff;
+  text-shadow: 0 0 6px #ff00ff;
+}
+
 
 /* CONTACT + CHAT */
 
@@ -650,4 +689,6 @@ p {
   .section-title {
     font-size: 20px;
   }
+       
 }
+
