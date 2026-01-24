@@ -1,47 +1,5 @@
 /* ============================
-   SUPABASE CONFIG
-============================ */
-
-const SUPABASE_URL = "https://bcbwbaupygtcglgjokto.supabase.co";
-const SUPABASE_KEY = "sb_publishable_7HM0HQkOdBZicL8i4kz6dw_5jMNIDie";
-
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-/* ============================
-   SAVE SCORE TO SUPABASE
-============================ */
-
-async function saveScore(name, score) {
-  const { error } = await supabaseClient
-    .from("leaderboard")
-    .insert([{ name, score }]);
-
-  if (error) {
-    console.error("Грешка при запис:", error);
-  }
-}
-
-/* ============================
-   LOAD LEADERBOARD
-============================ */
-
-async function loadLeaderboard() {
-  const { data, error } = await supabaseClient
-    .from("leaderboard")
-    .select("*")
-    .order("score", { ascending: false })
-    .limit(20);
-
-  if (error) {
-    console.error("Грешка при зареждане:", error);
-    return [];
-  }
-
-  return data;
-}
-
-/* ============================
-   RENDER LEADERBOARD
+   LEADERBOARD (FIREBASE)
 ============================ */
 
 async function renderLeaderboard() {
@@ -388,4 +346,3 @@ function sendMessage() {
 
 window.sendMessage = sendMessage;
 window.closeFlagGame = closeFlagGame;
-
