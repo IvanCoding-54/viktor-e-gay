@@ -343,6 +343,25 @@ p {
   color: #c0ffc0;
 }
 
+/* LEADERBOARD */
+
+.leaderboard {
+  margin-top: 10px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255,255,255,0.12);
+}
+
+.leaderboard-title {
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.leaderboard-list {
+  list-style: decimal;
+  padding-left: 18px;
+  font-size: 13px;
+}
+
 /* CONTACT + CHAT */
 
 .contact-number {
@@ -427,6 +446,129 @@ p {
   opacity: 0.7;
   margin-bottom: 6px;
   color: #c0c0c0;
+}
+
+/* FLAG GAME OVERLAY */
+
+.flag-game-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.flag-game-overlay.active {
+  display: flex;
+}
+
+.flag-game-window {
+  width: 360px;
+  max-width: 95vw;
+  background: rgba(10,10,18,0.98);
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow: 0 22px 50px rgba(0,0,0,0.9);
+  overflow: hidden;
+}
+
+.flag-game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px;
+  background: linear-gradient(120deg, #ff006a, #00f0ff, #7cff00);
+  font-size: 14px;
+}
+
+.flag-game-close {
+  border: none;
+  background: transparent;
+  color: #05060a;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.flag-game-info {
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
+.flag-game-area {
+  position: relative;
+  height: 260px;
+  background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.06), transparent 60%);
+  overflow: hidden;
+}
+
+/* FLAGS */
+
+.flag {
+  position: absolute;
+  top: -40px;
+  width: 60px;
+  height: 36px;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #05060a;
+  font-weight: 700;
+}
+
+.flag.lgbt {
+  background: linear-gradient(
+    to bottom,
+    #e40303 0%,
+    #ff8c00 16%,
+    #ffed00 32%,
+    #008026 48%,
+    #004dff 64%,
+    #750787 100%
+  );
+}
+
+.flag.bi {
+  background: linear-gradient(
+    to bottom,
+    #d60270 0%,
+    #9b4f96 50%,
+    #0038a8 100%
+  );
+}
+
+.flag.trans {
+  background: linear-gradient(
+    to bottom,
+    #5bcffa 0%,
+    #f5abb9 25%,
+    #ffffff 50%,
+    #f5abb9 75%,
+    #5bcffa 100%
+  );
+}
+
+.flag.pan {
+  background: linear-gradient(
+    to bottom,
+    #ff1b8d 0%,
+    #ffda00 50%,
+    #1bb3ff 100%
+  );
+}
+
+.flag.straight {
+  background: linear-gradient(
+    to bottom,
+    #ffffff 0%,
+    #d0d0d0 50%,
+    #000000 100%
+  );
 }
 
 /* REVEAL ON SCROLL */
