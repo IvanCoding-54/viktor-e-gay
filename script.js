@@ -165,7 +165,7 @@ const flagTypes = [
   { type: 'straight', label: 'STRAIGHT' }
 ];
 
-let flagTimer = 30;
+let flagTimer = 120;
 let flagTimerInterval = null;
 
 let flagGameOverlay;
@@ -428,4 +428,5 @@ function setTheme(theme) {
   body.classList.add(theme);
   document.getElementById("theme-menu").classList.remove("visible");
 }
+
 
