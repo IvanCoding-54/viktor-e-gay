@@ -188,21 +188,30 @@ function spawnAimTarget() {
   target.style.left = x + "px";
   target.style.top = y + "px";
 
-  target.onclick = () => {
+target.onclick = () => {
+  // Предотвратява повторно цъкане
+  if (target.classList.contains("clicked")) return;
+  target.classList.add("clicked");
+
+  // Добавя точка
   aimScore++;
   document.getElementById("aim-score").textContent = aimScore;
 
-  // Добавяме анимация
+  // Анимация за изчезване
   target.classList.add("fade-out");
 
-  // Пускаме звук
+  // Звук (ако имаш pop.mp3 в root)
   const audio = new Audio("pop.mp3");
   audio.volume = 0.5;
   audio.play();
 
-  // Премахваме елемента след анимацията
-  setTimeout(() => target.remove(), 400);
+  // Премахване и spawn на нов флаг
+  setTimeout(() => {
+    target.remove();
+    spawnAimTarget(); // създава нов флаг
+  }, 400);
 };
+
 
 
   aimArea.appendChild(target);
@@ -486,4 +495,5 @@ function sendMessage() {
 window.sendMessage = sendMessage;
 
 console.log("✅ script.js зареден успешно");
+
 
