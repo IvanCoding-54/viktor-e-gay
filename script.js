@@ -411,9 +411,5 @@ function setTheme(theme) {
   const body = document.body;
   body.classList.remove("light", "dark", "rgb");
   body.classList.add(theme);
-  document.getElementById("theme-menu").classList.remove("hidden");
+  document.getElementById("theme-menu").classList.remove("visible");
 }
-
-
-
-
