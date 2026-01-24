@@ -155,7 +155,8 @@ body.alt-theme .rgb-bg {
               0 0 28px rgba(0, 255, 255, 0.4);
 }
 .theme-menu.visible { 
-   opacity: 1; transform: translateY(0); 
+   opacity: 1; 
+   transform: translateY(0); 
    pointer-events: auto; 
 }
 .theme-menu.hidden {
@@ -603,6 +604,7 @@ body.rgb {
   background: linear-gradient(45deg, red, green, blue);
   color: white;
 }
+
 
 
 
