@@ -588,5 +588,96 @@ p {
   border-radius: 10px;
   overflow: hidden;
 }
+/* ============================
+   RAINBOW CATCH POPUP DESIGN
+============================ */
+
+.flag-game-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 999999999;
+}
+
+.flag-game-overlay.active {
+  display: flex !important;
+}
+
+.flag-game-window {
+  background: #111;
+  border: 2px solid #ff00ff;
+  box-shadow: 0 0 25px #ff00ff, 0 0 50px #00eaff;
+  border-radius: 16px;
+  width: 340px;
+  height: 450px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+}
+
+.flag-game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 20px;
+  color: white;
+  font-weight: bold;
+}
+
+.flag-game-close {
+  background: #ff0066;
+  border: none;
+  color: white;
+  font-size: 20px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.flag-game-close:hover {
+  background: #ff3385;
+}
+
+.flag-game-info {
+  color: white;
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.flag-game-area {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Falling flags */
+.flag {
+  position: absolute;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  user-select: none;
+  box-shadow: 0 0 10px rgba(255,255,255,0.4);
+}
+
+/* Flag colors */
+.flag.lgbt { background: linear-gradient(to bottom, #ff0000, #ff8c00, #ffff00, #008000, #0000ff, #8b00ff); }
+.flag.bi { background: linear-gradient(to bottom, #d60270, #9b4f96, #0038a8); }
+.flag.trans { background: linear-gradient(to bottom, #5bcffa, #f5abb9, #ffffff, #f5abb9, #5bcffa); }
+.flag.pan { background: linear-gradient(to bottom, #ff1b8d, #ffda00, #1bb3ff); }
+.flag.straight { background: linear-gradient(to bottom, #000000, #ffffff); color: black; }
+
 
 
