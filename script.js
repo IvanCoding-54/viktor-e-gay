@@ -32,11 +32,8 @@ async function renderLeaderboard() {
 ============================ */
 
 function openTab(tabName, btn) {
-  const tabs = document.querySelectorAll('.tab');
-  const buttons = document.querySelectorAll('.tab-btn');
-
-  tabs.forEach(tab => tab.classList.remove('active-tab'));
-  buttons.forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active-tab'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
 
   const activeSection = document.getElementById(tabName);
   if (!activeSection) return;
@@ -55,11 +52,20 @@ window.openTab = openTab;
    THEME SWITCH
 ============================ */
 
-function toggleTheme() {
-  document.body.classList.toggle('alt-theme');
+function toggleThemeMenu() {
+  const menu = document.getElementById("theme-menu");
+  menu.classList.toggle("visible");
 }
 
-window.toggleTheme = toggleTheme;
+function setTheme(theme) {
+  const body = document.body;
+  body.classList.remove("light", "dark", "rgb");
+  body.classList.add(theme);
+  document.getElementById("theme-menu").classList.remove("visible");
+}
+
+window.toggleThemeMenu = toggleThemeMenu;
+window.setTheme = setTheme;
 
 /* ============================
    REVEAL ON SCROLL
@@ -68,16 +74,11 @@ window.toggleTheme = toggleTheme;
 document.addEventListener("DOMContentLoaded", () => {
   const revealElements = document.querySelectorAll('.reveal');
 
-  const observer = new IntersectionObserver(
-    entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    },
-    { threshold: 0.2 }
-  );
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.2 });
 
   revealElements.forEach(el => observer.observe(el));
 });
@@ -87,12 +88,8 @@ document.addEventListener("DOMContentLoaded", () => {
 ============================ */
 
 document.addEventListener("DOMContentLoaded", () => {
-  const factItems = document.querySelectorAll('.fact-item');
-
-  factItems.forEach(item => {
-    item.addEventListener('click', () => {
-      item.classList.toggle('expanded');
-    });
+  document.querySelectorAll('.fact-item').forEach(item => {
+    item.addEventListener('click', () => item.classList.toggle('expanded'));
   });
 });
 
@@ -101,54 +98,118 @@ document.addEventListener("DOMContentLoaded", () => {
 ============================ */
 
 document.addEventListener("DOMContentLoaded", () => {
-  let gameScore = 0;
-  let gameTime = 0;
-  let gameInterval = null;
-  let gameRunning = false;
+  let score = 0;
+  let time = 0;
+  let interval = null;
+  let running = false;
 
-  const gameStartBtn = document.getElementById('game-start');
-  const gameScoreEl = document.getElementById('game-score');
-  const gameTimeEl = document.getElementById('game-time');
+  const btn = document.getElementById('game-start');
+  const scoreEl = document.getElementById('game-score');
+  const timeEl = document.getElementById('game-time');
 
-  if (!gameStartBtn || !gameScoreEl || !gameTimeEl) return;
+  if (!btn) return;
 
-  gameStartBtn.addEventListener('click', () => {
-    if (gameRunning) return;
+  btn.addEventListener('click', () => {
+    if (running) return;
 
-    gameRunning = true;
-    gameScore = 0;
-    gameTime = 5;
+    running = true;
+    score = 0;
+    time = 5;
 
-    gameScoreEl.textContent = gameScore;
-    gameTimeEl.textContent = gameTime;
+    scoreEl.textContent = score;
+    timeEl.textContent = time;
 
-    gameStartBtn.textContent = 'Кликни!';
-    gameStartBtn.disabled = false;
+    btn.textContent = 'Кликни!';
 
     const clickHandler = () => {
-      if (!gameRunning) return;
-      gameScore++;
-      gameScoreEl.textContent = gameScore;
+      if (!running) return;
+      score++;
+      scoreEl.textContent = score;
     };
 
-    gameStartBtn.addEventListener('click', clickHandler);
+    btn.addEventListener('click', clickHandler);
 
-    gameInterval = setInterval(() => {
-      gameTime--;
-      gameTimeEl.textContent = gameTime;
+    interval = setInterval(() => {
+      time--;
+      timeEl.textContent = time;
 
-      if (gameTime <= 0) {
-        clearInterval(gameInterval);
-        gameRunning = false;
-        gameStartBtn.textContent = 'Старт отново';
-        gameStartBtn.removeEventListener('click', clickHandler);
+      if (time <= 0) {
+        clearInterval(interval);
+        running = false;
+        btn.textContent = 'Старт отново';
+        btn.removeEventListener('click', clickHandler);
       }
     }, 1000);
   });
 });
 
 /* ============================
-   FLAG GAME (RAINBOW CATCH)
+   AIM TRAINER
+============================ */
+
+let aimScore = 0;
+let aimTime = 20;
+let aimInterval;
+let aimSpawnInterval;
+
+const aimArea = document.getElementById("aim-area");
+
+function spawnAimTarget() {
+  const target = document.createElement("div");
+  target.className = "aim-target aim-flag-rainbow";
+
+  for (let i = 0; i < 6; i++) {
+    const stripe = document.createElement("div");
+    stripe.className = "aim-target-stripe";
+    target.appendChild(stripe);
+  }
+
+  const rect = aimArea.getBoundingClientRect();
+  const x = Math.random() * (rect.width - 60);
+  const y = Math.random() * (rect.height - 40);
+
+  target.style.left = x + "px";
+  target.style.top = y + "px";
+
+  target.onclick = () => {
+    aimScore++;
+    document.getElementById("aim-score").textContent = aimScore;
+    target.remove();
+  };
+
+  aimArea.appendChild(target);
+
+  setTimeout(() => target.remove(), 900);
+}
+
+document.getElementById("aim-start").onclick = () => {
+  aimScore = 0;
+  aimTime = 20;
+
+  document.getElementById("aim-score").textContent = aimScore;
+  document.getElementById("aim-time").textContent = aimTime;
+
+  aimArea.innerHTML = "";
+
+  clearInterval(aimInterval);
+  clearInterval(aimSpawnInterval);
+
+  aimInterval = setInterval(() => {
+    aimTime--;
+    document.getElementById("aim-time").textContent = aimTime;
+
+    if (aimTime <= 0) {
+      clearInterval(aimInterval);
+      clearInterval(aimSpawnInterval);
+      alert("Край! Твоят резултат: " + aimScore);
+    }
+  }, 1000);
+
+  aimSpawnInterval = setInterval(spawnAimTarget, 450);
+};
+
+/* ============================
+   RAINBOW CATCH — POPUP VERSION (A)
 ============================ */
 
 let flagGameRunning = false;
@@ -156,6 +217,13 @@ let flagScore = 0;
 let flagSpawnInterval = null;
 let flagFallInterval = null;
 let flags = [];
+
+let flagTimer = 120;
+let flagTimerInterval = null;
+
+let flagGameOverlay;
+let flagGameArea;
+let flagScoreEl;
 
 const flagTypes = [
   { type: 'lgbt', label: 'LGBTQ+' },
@@ -165,33 +233,19 @@ const flagTypes = [
   { type: 'straight', label: 'STRAIGHT' }
 ];
 
-let flagTimer = 120;
-let flagTimerInterval = null;
-
-let flagGameOverlay;
-let flagGameArea;
-let flagScoreEl;
-let flagGameStartBtn;
-
 function openFlagGame() {
-  if (!flagGameOverlay || !flagGameArea || !flagScoreEl) return;
-
   flagGameOverlay.classList.add('active');
   startFlagGame();
 }
 
 function closeFlagGame() {
   stopFlagGame(false);
-  if (flagGameOverlay) {
-    flagGameOverlay.classList.remove('active');
-  }
+  flagGameOverlay.classList.remove('active');
 }
 
 window.closeFlagGame = closeFlagGame;
 
 function startFlagGame() {
-  if (!flagGameArea || !flagScoreEl) return;
-
   flagGameRunning = true;
   flagScore = 0;
   flagScoreEl.textContent = flagScore;
@@ -201,13 +255,11 @@ function startFlagGame() {
   document.getElementById("flag-timer").textContent = flagTimer;
 
   flagTimerInterval = setInterval(() => {
-  flagTimer--;
-  document.getElementById("flag-timer").textContent = flagTimer;
+    flagTimer--;
+    document.getElementById("flag-timer").textContent = flagTimer;
 
-  if (flagTimer <= 0) {
-    stopFlagGame(true);
-  }
-}, 1000);
+    if (flagTimer <= 0) stopFlagGame(true);
+  }, 1000);
 
   flagSpawnInterval = setInterval(spawnFlag, 500);
   flagFallInterval = setInterval(updateFlags, 40);
@@ -215,29 +267,23 @@ function startFlagGame() {
 
 function stopFlagGame(triggerEnd = true) {
   clearInterval(flagTimerInterval);
-  flagGameRunning = false;
   clearInterval(flagSpawnInterval);
   clearInterval(flagFallInterval);
+
+  flagGameRunning = false;
   flags = [];
-  if (flagGameArea) {
-    flagGameArea.innerHTML = '';
-  }
+  flagGameArea.innerHTML = '';
 
   if (triggerEnd) endFlagGame();
 }
 
 function spawnFlag() {
-  if (!flagGameRunning || !flagGameArea) return;
-
-  // Колко флага да се spawn-ват наведнъж
-  const count = 2; // смени на 3, 4, 5...
-
-  for (let i = 0; i < count; i++) {
-    createFlag();
-  }
+  const count = 2;
+  for (let i = 0; i < count; i++) createFlag();
 }
+
 function createFlag() {
-  const width = flagGameArea.clientWidth || 300;
+  const width = flagGameArea.clientWidth;
   const x = Math.random() * (width - 70);
 
   const isStraight = Math.random() < 0.2;
@@ -265,12 +311,8 @@ function createFlag() {
       stopFlagGame(true);
     } else {
       flagScore++;
-      if (flagScoreEl) {
-        flagScoreEl.textContent = flagScore;
-      }
-      if (flagGameArea.contains(div)) {
-        flagGameArea.removeChild(div);
-      }
+      flagScoreEl.textContent = flagScore;
+      div.remove();
       flags = flags.filter(f => f !== flagObj);
     }
   });
@@ -279,11 +321,8 @@ function createFlag() {
   flagGameArea.appendChild(div);
 }
 
-
 function updateFlags() {
-  if (!flagGameRunning || !flagGameArea) return;
-
-  const height = flagGameArea.clientHeight || 320;
+  const height = flagGameArea.clientHeight;
 
   flags.forEach(f => {
     f.y += f.speed;
@@ -292,9 +331,7 @@ function updateFlags() {
 
   flags = flags.filter(f => {
     if (f.y > height + 40) {
-      if (flagGameArea.contains(f.el)) {
-        flagGameArea.removeChild(f.el);
-      }
+      f.el.remove();
       return false;
     }
     return true;
@@ -304,36 +341,20 @@ function updateFlags() {
 async function endFlagGame() {
   const name = prompt(`Играта свърши! Точки: ${flagScore}\nВъведи име:`);
 
-  if (!name) {
-    if (flagGameOverlay) {
-      flagGameOverlay.classList.remove("active");
-    }
-    return;
+  if (name && typeof saveScore === "function") {
+    await saveScore(name, flagScore);
+    await renderLeaderboard();
   }
 
-  if (typeof saveScore === "function") {
-    try {
-      await saveScore(name, flagScore);
-      await renderLeaderboard();
-    } catch (e) {
-      console.error("Грешка при запис на резултат:", e);
-    }
-  }
-
-  if (flagGameOverlay) {
-    flagGameOverlay.classList.remove("active");
-  }
+  flagGameOverlay.classList.remove("active");
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   flagGameOverlay = document.getElementById('flag-game-overlay');
   flagGameArea = document.getElementById('flag-game-area');
   flagScoreEl = document.getElementById('flag-score');
-  flagGameStartBtn = document.getElementById('flag-game-start');
 
-  if (flagGameStartBtn) {
-    flagGameStartBtn.addEventListener('click', openFlagGame);
-  }
+  document.getElementById('flag-game-start').addEventListener('click', openFlagGame);
 
   renderLeaderboard();
 });
@@ -371,8 +392,8 @@ const aiRepliesByKeyword = [
   }
 ];
 
-function getAiReply(userText) {
-  const lower = userText.toLowerCase();
+function getAiReply(text) {
+  const lower = text.toLowerCase();
 
   for (const group of aiRepliesByKeyword) {
     if (group.keywords.some(k => lower.includes(k))) {
@@ -380,9 +401,7 @@ function getAiReply(userText) {
     }
   }
 
-  if (lower.endsWith("?")) {
-    return "Хубав въпрос. Какво мислиш ти?";
-  }
+  if (lower.endsWith("?")) return "Хубав въпрос. Какво мислиш ти?";
 
   return aiRepliesDefault[Math.floor(Math.random() * aiRepliesDefault.length)];
 }
@@ -390,7 +409,6 @@ function getAiReply(userText) {
 function sendMessage() {
   const input = document.getElementById("chat-input");
   const messages = document.getElementById("chat-messages");
-  if (!input || !messages) return;
 
   const text = input.value.trim();
   if (!text) return;
@@ -407,16 +425,15 @@ function sendMessage() {
   typing.classList.add("typing");
   typing.textContent = "Виктор пише...";
   messages.appendChild(typing);
-  messages.scrollTop = messages.scrollHeight;
 
-  const replyText = getAiReply(text);
+  const reply = getAiReply(text);
 
   setTimeout(() => {
     typing.remove();
 
     const aiMsg = document.createElement("div");
     aiMsg.classList.add("chat-message", "ai");
-    aiMsg.textContent = replyText;
+    aiMsg.textContent = reply;
     messages.appendChild(aiMsg);
 
     messages.scrollTop = messages.scrollHeight;
@@ -424,26 +441,5 @@ function sendMessage() {
 }
 
 window.sendMessage = sendMessage;
-console.log("SCRIPT LOADED");
 
-function toggleThemeMenu() {
-  const menu = document.getElementById("theme-menu");
-  menu.classList.toggle("visible");
-}
-
-function setTheme(theme) {
-  const body = document.body;
-  body.classList.remove("light", "dark", "rgb");
-  body.classList.add(theme);
-  document.getElementById("theme-menu").classList.remove("visible");
-}
-
-
-
-
-
-
-
-
-
-
+console.log("SCRIPT LOADED ✔");
