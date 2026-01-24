@@ -182,7 +182,7 @@ function spawnAimTarget() {
   setTimeout(() => target.remove(), 900);
 }
 
-document.getElementById("aim-start").onclick = () => {
+document.getElementById("aim-start").onclick = async () => {
   aimScore = 0;
   aimTime = 20;
 
@@ -199,10 +199,21 @@ document.getElementById("aim-start").onclick = () => {
     document.getElementById("aim-time").textContent = aimTime;
 
     if (aimTime <= 0) {
-      clearInterval(aimInterval);
-      clearInterval(aimSpawnInterval);
-      alert("Край! Твоят резултат: " + aimScore);
+  clearInterval(aimInterval);
+  clearInterval(aimSpawnInterval);
+
+  const name = prompt("Край! Твоят резултат: " + aimScore + "\nВъведи име:");
+  if (name) {
+    try {
+      await saveScore(name, aimScore);
+      await renderLeaderboard();
+    } catch (e) {
+      console.error("Грешка при запис на резултат:", e);
     }
+  }
+}
+
+
   }, 1000);
 
   aimSpawnInterval = setInterval(spawnAimTarget, 450);
@@ -443,3 +454,4 @@ function sendMessage() {
 window.sendMessage = sendMessage;
 
 console.log("SCRIPT LOADED ✔");
+
