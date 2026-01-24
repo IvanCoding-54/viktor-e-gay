@@ -165,6 +165,9 @@ const flagTypes = [
   { type: 'straight', label: 'STRAIGHT' }
 ];
 
+let flagTimer = 30;
+let flagTimerInterval = null;
+
 let flagGameOverlay;
 let flagGameArea;
 let flagScoreEl;
@@ -194,12 +197,24 @@ function startFlagGame() {
   flagScoreEl.textContent = flagScore;
   flags = [];
   flagGameArea.innerHTML = '';
+  flagTimer = 30;
+  document.getElementById("flag-timer").textContent = flagTimer;
+
+  flagTimerInterval = setInterval(() => {
+  flagTimer--;
+  document.getElementById("flag-timer").textContent = flagTimer;
+
+  if (flagTimer <= 0) {
+    stopFlagGame(true);
+  }
+}, 1000);
 
   flagSpawnInterval = setInterval(spawnFlag, 700);
   flagFallInterval = setInterval(updateFlags, 40);
 }
 
 function stopFlagGame(triggerEnd = true) {
+  clearInterval(flagTimerInterval);
   flagGameRunning = false;
   clearInterval(flagSpawnInterval);
   clearInterval(flagFallInterval);
@@ -413,3 +428,4 @@ function setTheme(theme) {
   body.classList.add(theme);
   document.getElementById("theme-menu").classList.remove("visible");
 }
+
