@@ -4,9 +4,6 @@
   <meta charset="UTF-8">
   <title>Viktor RGB Universe</title>
   <link rel="stylesheet" href="style.css">
-
-  <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
@@ -150,6 +147,52 @@
       <div id="flag-game-area" class="flag-game-area"></div>
     </div>
   </div>
+
+  <!-- FIREBASE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+    import { 
+      getFirestore, 
+      collection, 
+      addDoc, 
+      getDocs, 
+      query, 
+      orderBy, 
+      limit 
+    } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBFWvM1j4h3kXQuCuoIUnDMTcc48Mjt2Yw",
+      authDomain: "viktor-rgb.firebaseapp.com",
+      projectId: "viktor-rgb",
+      storageBucket: "viktor-rgb.firebasestorage.app",
+      messagingSenderId: "794757192149",
+      appId: "1:794757192149:web:716d69ca99a1f909bac55c",
+      measurementId: "G-9ZJZJGZXZT"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.saveScore = async function(name, score) {
+      await addDoc(collection(db, "leaderboard"), {
+        name: name,
+        score: score,
+        created_at: Date.now()
+      });
+    }
+
+    window.loadLeaderboard = async function() {
+      const q = query(
+        collection(db, "leaderboard"),
+        orderBy("score", "desc"),
+        limit(10)
+      );
+
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map(doc => doc.data());
+    }
+  </script>
 
   <!-- YOUR SCRIPT -->
   <script src="script.js"></script>
