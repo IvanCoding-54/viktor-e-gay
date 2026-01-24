@@ -12,6 +12,7 @@ async function renderLeaderboard() {
 
   entries.forEach(entry => {
     const li = document.createElement("li");
+    li.setAttribute("data-rank", i + 1);
     li.textContent = `${entry.name} – ${entry.score} точки`;
     list.appendChild(li);
   });
@@ -350,3 +351,4 @@ window.closeFlagGame = closeFlagGame;
 document.addEventListener("DOMContentLoaded", () => { 
    renderLeaderboard(); 
 });
+
