@@ -209,7 +209,7 @@ function startFlagGame() {
   }
 }, 1000);
 
-  flagSpawnInterval = setInterval(spawnFlag, 670);
+  flagSpawnInterval = setInterval(spawnFlag, 500);
   flagFallInterval = setInterval(updateFlags, 40);
 }
 
@@ -437,6 +437,7 @@ function setTheme(theme) {
   body.classList.add(theme);
   document.getElementById("theme-menu").classList.remove("visible");
 }
+
 
 
 
