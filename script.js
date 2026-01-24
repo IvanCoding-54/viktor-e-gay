@@ -3,7 +3,7 @@
 ============================ */
 
 const SUPABASE_URL = "https://bcbwbaupygtcglgjokto.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJjYndiYXVweWd0Y2dsZ2pva3RvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkyNDk0NzYsImV4cCI6MjA4NDgyNTQ3Nn0.YySm56ViB5dTrguBu-DZ6-qSONDeT1X3yfgAN9E_PFY";
+const SUPABASE_KEY = "sb_publishable_7HM0HQkOdBZicL8i4kz6dw_5jMNIDie";
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -388,3 +388,4 @@ function sendMessage() {
 
 window.sendMessage = sendMessage;
 window.closeFlagGame = closeFlagGame;
+
