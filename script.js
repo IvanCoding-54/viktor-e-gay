@@ -26,23 +26,6 @@ async function renderLeaderboard() {
     console.error("Грешка при зареждане на класацията:", e);
   }
 }
-async function saveAimScore(name, score) {
-  await firebase.firestore().collection("aim_scores").add({
-    name,
-    score,
-    timestamp: Date.now()
-  });
-}
-
-async function loadAimLeaderboard() {
-  const snap = await firebase.firestore()
-    .collection("aim_scores")
-    .orderBy("score", "desc")
-    .limit(10)
-    .get();
-
-  return snap.docs.map(doc => doc.data());
-}
 
 async function renderAimLeaderboard() {
   const list = document.getElementById("aim-leaderboard-list");
@@ -51,13 +34,17 @@ async function renderAimLeaderboard() {
   list.innerHTML = "";
   const entries = await loadAimLeaderboard();
 
+  if (entries.length === 0) {
+    list.innerHTML = "<li>Няма записани резултати още.</li>";
+    return;
+  }
+
   entries.forEach((e, i) => {
     const li = document.createElement("li");
     li.textContent = `${i + 1}. ${e.name} – ${e.score} точки`;
     list.appendChild(li);
   });
 }
-
 
 /* ============================
    TAB SYSTEM
@@ -98,7 +85,6 @@ function setTheme(theme) {
 
 window.toggleThemeMenu = toggleThemeMenu;
 window.setTheme = setTheme;
-
 /* ============================
    REVEAL ON SCROLL
 ============================ */
@@ -126,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* ============================
-   MINI CLICK GAME (FIXED)
+   MINI CLICK GAME
 ============================ */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -150,7 +136,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     scoreEl.textContent = score;
     timeEl.textContent = time;
-
     btn.textContent = 'Кликни!';
 
     const clickHandler = () => {
@@ -176,7 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* ============================
-   AIM TRAINER (WITH LEADERBOARD)
+   AIM TRAINER
 ============================ */
 
 let aimScore = 0;
@@ -220,7 +205,6 @@ document.getElementById("aim-start").onclick = async () => {
 
   document.getElementById("aim-score").textContent = aimScore;
   document.getElementById("aim-time").textContent = aimTime;
-
   aimArea.innerHTML = "";
 
   clearInterval(aimInterval);
@@ -231,27 +215,25 @@ document.getElementById("aim-start").onclick = async () => {
     document.getElementById("aim-time").textContent = aimTime;
 
     if (aimTime <= 0) {
-  clearInterval(aimInterval);
-  clearInterval(aimSpawnInterval);
+      clearInterval(aimInterval);
+      clearInterval(aimSpawnInterval);
 
-  const name = prompt("Край! Твоят резултат: " + aimScore + "\nВъведи име:");
-  if (name) {
-    try {
-      await saveAimScore(name, aimScore);
-      await renderAimLeaderboard();
-    } catch (e) {
-      console.error("Грешка при запис:", e);
+      const name = prompt("Край! Твоят резултат: " + aimScore + "\nВъведи име:");
+      if (name) {
+        try {
+          await saveAimScore(name, aimScore);
+          await renderAimLeaderboard();
+        } catch (e) {
+          console.error("Грешка при запис:", e);
+        }
+      }
     }
-  }
-}
-
   }, 1000);
 
   aimSpawnInterval = setInterval(spawnAimTarget, 450);
 };
-
 /* ============================
-   RAINBOW CATCH — POPUP VERSION (A)
+   RAINBOW CATCH — POPUP VERSION
 ============================ */
 
 let flagGameRunning = false;
@@ -401,7 +383,6 @@ document.addEventListener("DOMContentLoaded", () => {
   renderLeaderboard();
   renderAimLeaderboard();
 });
-
 /* ============================
    AI CHAT
 ============================ */
@@ -418,7 +399,7 @@ const aiRepliesDefault = [
 
 const aiRepliesByKeyword = [
   {
-    keywords: ["sad", "тъжен", "депрес", "сам"],
+    keywords: ["sad", "тъжен", "депрес", "сам", "самота"],
     replies: [
       "Звучи тежко. Разкажи ми още.",
       "Понякога е окей да не си окей.",
@@ -426,11 +407,19 @@ const aiRepliesByKeyword = [
     ]
   },
   {
-    keywords: ["gay", "гей", "ориентация", "lgbt"],
+    keywords: ["gay", "гей", "ориентация", "lgbt", "лесбийка", "транс"],
     replies: [
       "Сексуалността ти е част от това кой си.",
       "Няма нищо грешно в това кого обичаш.",
       "Да си гей не те прави по-малко ценен."
+    ]
+  },
+  {
+    keywords: ["щастлив", "радост", "успех", "любов"],
+    replies: [
+      "Толкова се радвам за теб!",
+      "Звучи прекрасно — сподели още!",
+      "Тези моменти са безценни."
     ]
   }
 ];
@@ -485,6 +474,4 @@ function sendMessage() {
 
 window.sendMessage = sendMessage;
 
-console.log("SCRIPT LOADED ✔");
-
-
+console.log("✅ script.js зареден успешно");
