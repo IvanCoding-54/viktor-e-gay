@@ -26,6 +26,38 @@ async function renderLeaderboard() {
     console.error("Грешка при зареждане на класацията:", e);
   }
 }
+async function saveAimScore(name, score) {
+  await firebase.firestore().collection("aim_scores").add({
+    name,
+    score,
+    timestamp: Date.now()
+  });
+}
+
+async function loadAimLeaderboard() {
+  const snap = await firebase.firestore()
+    .collection("aim_scores")
+    .orderBy("score", "desc")
+    .limit(10)
+    .get();
+
+  return snap.docs.map(doc => doc.data());
+}
+
+async function renderAimLeaderboard() {
+  const list = document.getElementById("aim-leaderboard-list");
+  if (!list) return;
+
+  list.innerHTML = "";
+  const entries = await loadAimLeaderboard();
+
+  entries.forEach((e, i) => {
+    const li = document.createElement("li");
+    li.textContent = `${i + 1}. ${e.name} – ${e.score} точки`;
+    list.appendChild(li);
+  });
+}
+
 
 /* ============================
    TAB SYSTEM
@@ -199,19 +231,20 @@ document.getElementById("aim-start").onclick = async () => {
     document.getElementById("aim-time").textContent = aimTime;
 
     if (aimTime <= 0) {
-      clearInterval(aimInterval);
-      clearInterval(aimSpawnInterval);
+  clearInterval(aimInterval);
+  clearInterval(aimSpawnInterval);
 
-      const name = prompt("Край! Твоят резултат: " + aimScore + "\nВъведи име:");
-      if (name) {
-        try {
-          await saveScore(name, aimScore);
-          await renderLeaderboard();
-        } catch (e) {
-          console.error("Грешка при запис:", e);
-        }
-      }
+  const name = prompt("Край! Твоят резултат: " + aimScore + "\nВъведи име:");
+  if (name) {
+    try {
+      await saveAimScore(name, aimScore);
+      await renderAimLeaderboard();
+    } catch (e) {
+      console.error("Грешка при запис:", e);
     }
+  }
+}
+
   }, 1000);
 
   aimSpawnInterval = setInterval(spawnAimTarget, 450);
@@ -452,3 +485,4 @@ function sendMessage() {
 window.sendMessage = sendMessage;
 
 console.log("SCRIPT LOADED ✔");
+
