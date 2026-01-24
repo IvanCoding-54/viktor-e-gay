@@ -197,7 +197,7 @@ function startFlagGame() {
   flagScoreEl.textContent = flagScore;
   flags = [];
   flagGameArea.innerHTML = '';
-  flagTimer = 30;
+  flagTimer = 120;
   document.getElementById("flag-timer").textContent = flagTimer;
 
   flagTimerInterval = setInterval(() => {
@@ -428,5 +428,6 @@ function setTheme(theme) {
   body.classList.add(theme);
   document.getElementById("theme-menu").classList.remove("visible");
 }
+
 
 
