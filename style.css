@@ -573,6 +573,21 @@ body.alt-theme .rgb-bg {
   margin-top: -25px;
   margin-right: 10px;
 }
+body.light {
+  background: #f5f5f5;
+  color: #222;
+}
+
+body.dark {
+  background: #111;
+  color: #eee;
+}
+
+body.rgb {
+  background: linear-gradient(45deg, red, green, blue);
+  color: white;
+}
+
 
 
 
