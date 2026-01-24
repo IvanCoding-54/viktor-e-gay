@@ -290,10 +290,15 @@ function updateFlags() {
 async function endFlagGame() {
   const name = prompt(`Играта свърши! Точки: ${flagScore}\nВъведи име:`);
 
-  if (!name) return;
+  if (!name) {
+    flagGameOverlay.classList.remove("active");
+    return;
+  }
 
   await saveScore(name, flagScore);
   await renderLeaderboard();
+
+  flagGameOverlay.classList.remove("active");
 }
 
 /* ============================
