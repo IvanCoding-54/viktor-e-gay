@@ -290,7 +290,7 @@ function closeFlagGame() {
 window.closeFlagGame = closeFlagGame;
 
 function startFlagGame() {
-  flagGameRunning = true;
+  flagGameRunning = true; 
   flagScore = 0;
   flagScoreEl.textContent = flagScore;
   flags = [];
@@ -322,9 +322,44 @@ function stopFlagGame(triggerEnd = true) {
 }
 
 function spawnFlag() {
-  const count = 2;
-  for (let i = 0; i < count; i++) createFlag();
+  const flag = document.createElement("div");
+
+  // Случаен тип флаг
+  const types = ["lgbt", "bi", "trans", "pan", "straight"];
+  const type = types[Math.floor(Math.random() * types.length)];
+  flag.classList.add("flag", type);
+
+  // Случайна позиция по X
+  const x = Math.random() * (flagGameArea.clientWidth - 90);
+  flag.style.left = `${x}px`;
+
+  // Съдържание (можеш да сложиш емоджи или текст)
+  flag.textContent = "🏳️‍🌈";
+
+  // Добавяне в DOM
+  flagGameArea.appendChild(flag);
+
+  // Премахване след края на анимацията
+  flag.addEventListener("animationend", () => {
+    flag.remove();
+  });
+
+  // При клик — премахване и точка
+  flag.onclick = () => {
+    if (flag.classList.contains("clicked")) return;
+    flag.classList.add("clicked");
+
+    score++;
+    updateScoreDisplay();
+
+    const audio = new Audio("pop.mp3");
+    audio.volume = 0.5;
+    audio.play();
+
+    flag.remove();
+  };
 }
+
 
 function createFlag() {
   const width = flagGameArea.clientWidth;
