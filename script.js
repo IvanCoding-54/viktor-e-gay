@@ -1,4 +1,68 @@
-/* TAB SYSTEM */
+/* ============================
+   SUPABASE CONFIG
+============================ */
+
+const SUPABASE_URL = "https://bcbwbaupygtcglgjokto.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJjYndiYXVweWd0Y2dsZ2pva3RvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkyNDk0NzYsImV4cCI6MjA4NDgyNTQ3Nn0.YySm56ViB5dTrguBu-DZ6-qSONDeT1X3yfgAN9E_PFY";
+
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+/* ============================
+   SAVE SCORE TO SUPABASE
+============================ */
+
+async function saveScore(name, score) {
+  const { error } = await supabaseClient
+    .from("leaderboard")
+    .insert([{ name, score }]);
+
+  if (error) {
+    console.error("Грешка при запис:", error);
+  }
+}
+
+/* ============================
+   LOAD LEADERBOARD
+============================ */
+
+async function loadLeaderboard() {
+  const { data, error } = await supabaseClient
+    .from("leaderboard")
+    .select("*")
+    .order("score", { ascending: false })
+    .limit(20);
+
+  if (error) {
+    console.error("Грешка при зареждане:", error);
+    return [];
+  }
+
+  return data;
+}
+
+/* ============================
+   RENDER LEADERBOARD
+============================ */
+
+async function renderLeaderboard() {
+  const list = document.getElementById("leaderboard-list");
+  if (!list) return;
+
+  list.innerHTML = "";
+
+  const entries = await loadLeaderboard();
+
+  entries.forEach(entry => {
+    const li = document.createElement("li");
+    li.textContent = `${entry.name} – ${entry.score} точки`;
+    list.appendChild(li);
+  });
+}
+
+/* ============================
+   TAB SYSTEM
+============================ */
+
 function openTab(tabName, btn) {
   const tabs = document.querySelectorAll('.tab');
   const buttons = document.querySelectorAll('.tab-btn');
@@ -15,12 +79,18 @@ function openTab(tabName, btn) {
   }
 }
 
-/* THEME SWITCH */
+/* ============================
+   THEME SWITCH
+============================ */
+
 function toggleTheme() {
   document.body.classList.toggle('alt-theme');
 }
 
-/* REVEAL ON SCROLL */
+/* ============================
+   REVEAL ON SCROLL
+============================ */
+
 const revealElements = document.querySelectorAll('.reveal');
 
 const observer = new IntersectionObserver(
@@ -36,7 +106,10 @@ const observer = new IntersectionObserver(
 
 revealElements.forEach(el => observer.observe(el));
 
-/* INTERACTIVE FACTS */
+/* ============================
+   INTERACTIVE FACTS
+============================ */
+
 const factItems = document.querySelectorAll('.fact-item');
 
 factItems.forEach(item => {
@@ -45,7 +118,10 @@ factItems.forEach(item => {
   });
 });
 
-/* MINI GAME: CLICK GAME */
+/* ============================
+   MINI CLICK GAME
+============================ */
+
 let gameScore = 0;
 let gameTime = 0;
 let gameInterval = null;
@@ -91,20 +167,20 @@ if (gameStartBtn) {
   });
 }
 
-/* FLAG GAME: RAINBOW CATCH */
+/* ============================
+   FLAG GAME (RAINBOW CATCH)
+============================ */
 
 let flagGameRunning = false;
 let flagScore = 0;
 let flagSpawnInterval = null;
 let flagFallInterval = null;
 let flags = [];
-let leaderboard = [];
 
 const flagGameOverlay = document.getElementById('flag-game-overlay');
 const flagGameArea = document.getElementById('flag-game-area');
 const flagScoreEl = document.getElementById('flag-score');
 const flagGameStartBtn = document.getElementById('flag-game-start');
-const leaderboardList = document.getElementById('leaderboard-list');
 
 const flagTypes = [
   { type: 'lgbt', label: 'LGBTQ+' },
@@ -115,13 +191,11 @@ const flagTypes = [
 ];
 
 function openFlagGame() {
-  if (!flagGameOverlay || !flagGameArea) return;
   flagGameOverlay.classList.add('active');
   startFlagGame();
 }
 
 function closeFlagGame() {
-  if (!flagGameOverlay) return;
   stopFlagGame(false);
   flagGameOverlay.classList.remove('active');
 }
@@ -146,20 +220,18 @@ function stopFlagGame(triggerEnd = true) {
   clearInterval(flagSpawnInterval);
   clearInterval(flagFallInterval);
   flags = [];
-  if (flagGameArea) flagGameArea.innerHTML = '';
+  flagGameArea.innerHTML = '';
 
-  if (triggerEnd) {
-    endFlagGame();
-  }
+  if (triggerEnd) endFlagGame();
 }
 
 function spawnFlag() {
-  if (!flagGameRunning || !flagGameArea) return;
+  if (!flagGameRunning) return;
 
   const width = flagGameArea.clientWidth;
   const x = Math.random() * (width - 70);
 
-  const isStraight = Math.random() < 0.2; // 20% шанс да е straight
+  const isStraight = Math.random() < 0.2;
   const goodFlags = flagTypes.filter(f => f.type !== 'straight');
   const chosen = isStraight
     ? flagTypes.find(f => f.type === 'straight')
@@ -179,6 +251,7 @@ function spawnFlag() {
 
   div.addEventListener('click', () => {
     if (!flagGameRunning) return;
+
     if (div.dataset.type === 'straight') {
       stopFlagGame(true);
     } else {
@@ -194,7 +267,7 @@ function spawnFlag() {
 }
 
 function updateFlags() {
-  if (!flagGameRunning || !flagGameArea) return;
+  if (!flagGameRunning) return;
 
   const height = flagGameArea.clientHeight;
 
@@ -205,9 +278,6 @@ function updateFlags() {
 
   flags = flags.filter(f => {
     if (f.y > height + 40) {
-      if (f.el.dataset.type !== 'straight') {
-        // изпуснато добро знаме – не губиш, просто го махаме
-      }
       if (flagGameArea.contains(f.el)) {
         flagGameArea.removeChild(f.el);
       }
@@ -217,78 +287,44 @@ function updateFlags() {
   });
 }
 
-function endFlagGame() {
-  const name = prompt(`Играта свърши! Точки: ${flagScore}\nВъведи име за класацията:`);
+async function endFlagGame() {
+  const name = prompt(`Играта свърши! Точки: ${flagScore}\nВъведи име:`);
+
   if (!name) return;
 
-  leaderboard.push({ name: name.trim(), score: flagScore });
-  leaderboard.sort((a, b) => b.score - a.score);
-
-  renderLeaderboard();
+  await saveScore(name, flagScore);
+  await renderLeaderboard();
 }
 
-function renderLeaderboard() {
-  if (!leaderboardList) return;
-  leaderboardList.innerHTML = '';
-
-  leaderboard.forEach(entry => {
-    const li = document.createElement('li');
-    li.textContent = `${entry.name} – ${entry.score} дъги`;
-    leaderboardList.appendChild(li);
-  });
-}
-
-/* FAKE AI CHAT – ПО-УМЕН */
+/* ============================
+   AI CHAT
+============================ */
 
 const aiRepliesDefault = [
   "Разбирам те. Това, което чувстваш, има значение.",
   "Интересно е как го описваш. Кажи ми още.",
-  "Не си сам в това усещане, дори да ти изглежда така.",
-  "Различен не значи грешен. Различен значи интересен.",
-  "Понякога е трудно да бъдеш себе си, но е по-честно.",
-  "Харесва ми как се изразяваш. Продължи.",
+  "Не си сам в това усещане.",
+  "Различен не значи грешен.",
+  "Понякога е трудно да бъдеш себе си.",
+  "Харесва ми как се изразяваш.",
   "Понякога просто е нужно някой да те чуе."
 ];
 
 const aiRepliesByKeyword = [
   {
-    keywords: ["sad", "тъжен", "тъжно", "депрес", "сам", "самота"],
+    keywords: ["sad", "тъжен", "депрес", "сам"],
     replies: [
-      "Звучи тежко. Дори да се чувстваш сам, това, което носиш в себе си, е важно.",
-      "Понякога е окей да не си окей. Не си длъжен да си силен през цялото време.",
-      "Това, че се чувстваш така, не те прави слаб. Прави те истински. Как би описал това чувство с една дума?"
+      "Звучи тежко. Разкажи ми още.",
+      "Понякога е окей да не си окей.",
+      "Това, че се чувстваш така, не те прави слаб."
     ]
   },
   {
-    keywords: ["gay", "гей", "сексуалност", "ориентация", "лгбт", "lgbt"],
+    keywords: ["gay", "гей", "ориентация", "lgbt"],
     replies: [
-      "Сексуалността ти не е проблем за оправяне, а част от това кой си.",
-      "Няма нищо грешно в това кого обичаш. Точка.",
-      "Да си гей не те прави по-малко ценен. Напротив – прави те по-истински. Как се чувстваш с това днес?"
-    ]
-  },
-  {
-    keywords: ["различен", "странен", "weird", "не като другите"],
-    replies: [
-      "Различното често е най-интересното нещо в един човек.",
-      "Ако всички бяхме еднакви, щеше да е ужасно скучно.",
-      "Твоето „различно“ е точно това, което те прави запомнящ се. В какво най-много се усещаш различен?"
-    ]
-  },
-  {
-    keywords: ["страх", "уплашен", "притеснен", "тревожен"],
-    replies: [
-      "Страхът е нормална реакция, особено когато си честен със себе си.",
-      "Можеш да си уплашен и смел едновременно. Това, че продължаваш, вече е сила.",
-      "От какво те е най-много страх в момента?"
-    ]
-  },
-  {
-    keywords: ["щастлив", "добре", "радост", "яко"],
-    replies: [
-      "Радвам се, че се чувстваш така. Разкажи ми какво те направи щастлив.",
-      "Тези моменти са важни. Запомни ги – те ти напомнят защо си струва.",
-      "Обичам да чувам за хубавите неща. Какво точно ти донесе това чувство?"
+      "Сексуалността ти е част от това кой си.",
+      "Няма нищо грешно в това кого обичаш.",
+      "Да си гей не те прави по-малко ценен."
     ]
   }
 ];
@@ -303,7 +339,7 @@ function getAiReply(userText) {
   }
 
   if (lower.endsWith("?")) {
-    return "Хубав въпрос. Какво е твоето усещане за отговора?";
+    return "Хубав въпрос. Какво мислиш ти?";
   }
 
   return aiRepliesDefault[Math.floor(Math.random() * aiRepliesDefault.length)];
@@ -345,6 +381,5 @@ function sendMessage() {
   }, 900);
 }
 
-/* expose for inline onclick */
 window.sendMessage = sendMessage;
 window.closeFlagGame = closeFlagGame;
