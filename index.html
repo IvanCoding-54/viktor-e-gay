@@ -42,7 +42,7 @@
         <button class="tab-btn" onclick="openTab('contact', this)">Контакт</button>
       </div>
       <button class="theme-toggle" onclick="toggleThemeMenu()">Смени тема</button>
-      <div id="theme-menu" class="theme-menu hidden">
+      <div id="theme-menu" class="theme-menu">
         <button onclick="setTheme('light')">Светла тема</button>
         <button onclick="setTheme('dark')">Тъмна тема</button>
         <button onclick="setTheme('rgb')">RGB тема</button>
@@ -237,24 +237,9 @@
     }
   </script>
 
-  <script src="script.js"></script>
-  <script>
-  function toggleThemeMenu() {
-    const menu = document.getElementById("theme-menu");
-    menu.classList.toggle("hidden");
-  }
-
-  function setTheme(theme) {
-    const body = document.body;
-    body.classList.remove("light", "dark", "rgb");
-    body.classList.add(theme);
-    document.getElementById("theme-menu").classList.add("hidden");
-  }
-</script>
+<script src="script.js"></script>
 </body>
 </html>
 
-</body>
-</html>
 
 
