@@ -568,3 +568,12 @@ p {
 
 .flag.pan {
   background: linear-gradient(
+/* FIX: Force tab system to work */
+.tab {
+  display: none !important;
+}
+
+.active-tab {
+  display: block !important;
+}
+
