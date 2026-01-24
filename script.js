@@ -247,7 +247,7 @@ function spawnFlag() {
   const flagObj = {
     el: div,
     y: -40,
-    speed: 2 + Math.random() * 2
+    speed: 4 + Math.random() * 3
   };
 
   div.addEventListener('click', () => {
@@ -428,6 +428,7 @@ function setTheme(theme) {
   body.classList.add(theme);
   document.getElementById("theme-menu").classList.remove("visible");
 }
+
 
 
 
