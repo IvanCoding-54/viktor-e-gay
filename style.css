@@ -563,28 +563,21 @@ p {
   display: flex;
 }
 /* POPUP OVERLAY FIX */
-.flag-game-overlay { 
+.flag-game-overlay {
    position: fixed; 
    inset: 0; 
-   background: rgba(0,0,0,0.6); 
-   display: none; 
-   justify-content: center; 
-   align-items: center; 
-   z-index: 999999; /* УВЕЛИЧАВАМЕ */ 
+   background: rgba(0,0,0,0.7); 
+   display: none; justify-content: 
+      center; align-items: 
+      center; z-index: 999999999; /* МНОГО ВИСОКО */ 
+} 
+.flag-game-overlay.active { 
+   display: flex !important; 
 }
 
-.flag-game-overlay.active {
-  display: flex;
-}
-
-.flag-game-window {
-  background: #111;
-  padding: 20px;
-  border-radius: 14px;
-  width: 320px;
-  height: 420px;
-  position: relative;
-  overflow: hidden;
+.flag-game-window { 
+   position: relative; 
+   z-index: 999999999; 
 }
 
 .flag-game-area {
@@ -595,4 +588,5 @@ p {
   border-radius: 10px;
   overflow: hidden;
 }
+
 
