@@ -544,9 +544,10 @@ body.alt-theme .rgb-bg {
   display: flex;
   justify-content: flex-end;
   align-items: flex-start;
-  margin-top: -15px;
-  margin-right: -4px;
+  margin-top: -25px;
+  margin-right: 10px;
 }
+
 
 
 
