@@ -468,13 +468,18 @@ body.alt-theme .rgb-bg {
 }
 /* GIF СТИЛОВЕ */
 .gif-frame {
-  padding: 4px; /* вместо 6px */
+  position: relative;
+  display: inline-block;
+  width: 260px; /* GIF е 240px, рамката само +20px */
+  padding: 4px;
   border-radius: 18px;
   background: conic-gradient(from 180deg, #ff006a, #00f0ff, #7cff00, #ff006a);
   animation: rotate-border 8s linear infinite;
   transform: rotate(-4deg);
   box-shadow: 0 0 30px rgba(0,255,255,0.4), 0 0 60px rgba(255,0,128,0.3);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  justify-content: center;
 }
 
 .gif-frame:hover {
@@ -493,12 +498,12 @@ body.alt-theme .rgb-bg {
 .gif {
   display: block;
   width: 240px;
-  max-width: 100%;
-  border-radius: 16px;
+  border-radius: 14px;
   box-shadow: 0 20px 50px rgba(0,0,0,0.9);
   transition: transform 0.3s ease;
-  margin: 0; /* важно */
+  margin: 0;
 }
+
 
 .gif:hover {
   transform: scale(1.05);
@@ -535,5 +540,6 @@ body.alt-theme .rgb-bg {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
 
 
