@@ -142,7 +142,7 @@ body.alt-theme .rgb-bg {
   font-size: 13px;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 
 .theme-menu button:hover {
@@ -596,6 +596,7 @@ body.rgb {
   background: linear-gradient(45deg, red, green, blue);
   color: white;
 }
+
 
 
 
