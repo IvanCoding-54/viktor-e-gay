@@ -58,7 +58,7 @@ function openTab(tabName, btn) {
   if (!activeSection) return;
 
   activeSection.classList.add('active-tab');
-  btn.classList.add('active');
+  if (btn) btn.classList.add('active');
 
   if (activeSection.classList.contains('reveal')) {
     activeSection.classList.add('visible');
@@ -85,6 +85,7 @@ function setTheme(theme) {
 
 window.toggleThemeMenu = toggleThemeMenu;
 window.setTheme = setTheme;
+
 /* ============================
    REVEAL ON SCROLL
 ============================ */
@@ -188,31 +189,24 @@ function spawnAimTarget() {
   target.style.left = x + "px";
   target.style.top = y + "px";
 
-target.onclick = () => {
-  // Предотвратява повторно цъкане
-  if (target.classList.contains("clicked")) return;
-  target.classList.add("clicked");
+  target.onclick = () => {
+    if (target.classList.contains("clicked")) return;
+    target.classList.add("clicked");
 
-  // Добавя точка
-  aimScore++;
-  document.getElementById("aim-score").textContent = aimScore;
+    aimScore++;
+    document.getElementById("aim-score").textContent = aimScore;
 
-  // Анимация за изчезване
-  target.classList.add("fade-out");
+    target.classList.add("fade-out");
 
-  // Звук (ако имаш pop.mp3 в root)
-  const audio = new Audio("pop.mp3");
-  audio.volume = 0.5;
-  audio.play();
+    const audio = new Audio("pop.mp3");
+    audio.volume = 0.5;
+    audio.play();
 
-  // Премахване и spawn на нов флаг
-  setTimeout(() => {
-    target.remove();
-    spawnAimTarget(); // създава нов флаг
-  }, 400);
-};
-
-
+    setTimeout(() => {
+      target.remove();
+      spawnAimTarget();
+    }, 400);
+  };
 
   aimArea.appendChild(target);
 
@@ -252,161 +246,47 @@ document.getElementById("aim-start").onclick = async () => {
 
   aimSpawnInterval = setInterval(spawnAimTarget, 450);
 };
+
 /* ============================
    RAINBOW CATCH — POPUP VERSION
 ============================ */
 
-let flagGameRunning = false;
-let flagScore = 0;
-let flagSpawnInterval = null;
-let flagFallInterval = null;
-let flags = [];
-
-let flagTimer = 120;
-let flagTimerInterval = null;
-
-let flagGameOverlay;
-let flagGameArea;
-let flagScoreEl;
-
-const flagTypes = [
-  { type: 'lgbt', label: 'LGBTQ+' },
-  { type: 'bi', label: 'BI' },
-  { type: 'trans', label: 'TRANS' },
-  { type: 'pan', label: 'PAN' },
-  { type: 'straight', label: 'STRAIGHT' }
-];
-
-function openFlagGame() {
-  flagGameOverlay.classList.add('active');
-  startFlagGame();
-}
-
-function closeFlagGame() {
-  stopFlagGame(false);
-  flagGameOverlay.classList.remove('active');
-}
-
-window.closeFlagGame = closeFlagGame;
-
-function startFlagGame() {
-  flagGameRunning = true; 
-  flagScore = 0;
-  flagScoreEl.textContent = flagScore;
-  flags = [];
-  flagGameArea.innerHTML = '';
-  flagTimer = 120;
-  document.getElementById("flag-timer").textContent = flagTimer;
-
-  flagTimerInterval = setInterval(() => {
-    flagTimer--;
-    document.getElementById("flag-timer").textContent = flagTimer;
-
-    if (flagTimer <= 0) stopFlagGame(true);
-  }, 1000);
-
-  flagSpawnInterval = setInterval(spawnFlag, 500);
-  flagFallInterval = setInterval(updateFlags, 40);
-}
-
-function stopFlagGame(triggerEnd = true) {
-  clearInterval(flagTimerInterval);
-  clearInterval(flagSpawnInterval);
-  clearInterval(flagFallInterval);
-
-  flagGameRunning = false;
-  flags = [];
-  flagGameArea.innerHTML = '';
-
-  if (triggerEnd) endFlagGame();
-}
+let flagTypes = ["lgbt", "bi", "trans", "pan", "straight"];
 
 function spawnFlag() {
   const flag = document.createElement("div");
 
-  // Случаен тип флаг
-  const types = ["lgbt", "bi", "trans", "pan", "straight"];
-  const type = types[Math.floor(Math.random() * types.length)];
+  const type = flagTypes[Math.floor(Math.random() * flagTypes.length)];
   flag.classList.add("flag", type);
 
-  // Случайна позиция по X
   const x = Math.random() * (flagGameArea.clientWidth - 90);
   flag.style.left = `${x}px`;
 
-  // Съдържание (можеш да сложиш емоджи или текст)
   flag.textContent = "🏳️‍🌈";
-
-  // Добавяне в DOM
   flagGameArea.appendChild(flag);
 
-  // Премахване след края на анимацията
   flag.addEventListener("animationend", () => {
     flag.remove();
   });
 
-  // При клик — премахване и точка
   flag.onclick = () => {
-  if (flag.classList.contains("clicked")) return;
-  flag.classList.add("clicked");
+    if (flag.classList.contains("clicked")) return;
+    flag.classList.add("clicked");
 
-  score++;
-  updateScoreDisplay();
+    flagScore++;
+    flagScoreEl.textContent = flagScore;
 
-  const audio = new Audio("pop.mp3");
-  audio.volume = 0.5;
-  audio.play();
+    const audio = new Audio("pop.mp3");
+    audio.volume = 0.5;
+    audio.play();
 
-  // Добави клас за анимация
-  flag.classList.add("fade-out");
+    flag.classList.add("fade-out");
 
-  // Изчакай анимацията и тогава премахни флага
-  setTimeout(() => {
-    flag.remove();
-  }, 400); // трябва да съвпада с продължителността на анимацията в CSS
-};
-
-
-
-function createFlag() {
-  const width = flagGameArea.clientWidth;
-  const x = Math.random() * (width - 70);
-
-  const isStraight = Math.random() < 0.2;
-  const goodFlags = flagTypes.filter(f => f.type !== 'straight');
-  const chosen = isStraight
-    ? flagTypes.find(f => f.type === 'straight')
-    : goodFlags[Math.floor(Math.random() * goodFlags.length)];
-
-  const div = document.createElement('div');
-  div.classList.add('flag', chosen.type);
-  div.style.left = `${x}px`;
-  div.dataset.type = chosen.type;
-  div.textContent = chosen.label;
-
-  const flagObj = {
-    el: div,
-    y: -40,
-    speed: 4 + Math.random() * 3
+    setTimeout(() => {
+      flag.remove();
+    }, 400);
   };
-
-  div.addEventListener('click', () => {
-    if (!flagGameRunning) return;
-
-    if (div.dataset.type === 'straight') {
-      stopFlagGame(true);
-    } else {
-      flagScore++;
-      flagScoreEl.textContent = flagScore;
-      div.remove();
-      flags = flags.filter(f => f !== flagObj);
-    }
-  });
-
-  flags.push(flagObj);
-  flagGameArea.appendChild(div);
 }
-
-
 
 async function endFlagGame() {
   const name = prompt(`Играта свърши! Точки: ${flagScore}\nВъведи име:`);
@@ -521,7 +401,3 @@ function sendMessage() {
 window.sendMessage = sendMessage;
 
 console.log("✅ script.js зареден успешно");
-
-
-
-
