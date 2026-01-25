@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let interval = null;
   let running = false;
 
-  const btn = document.getElementById('game-start');
+  const btn = document.getElementById('game-');
   const scoreEl = document.getElementById('game-score');
   const timeEl = document.getElementById('game-time');
 
@@ -171,6 +171,7 @@ let aimSpawnInterval;
 
 const aimArea = document.getElementById("aim-area");
 
+// 🎯 Създаване на цел
 function spawnAimTarget() {
   const target = document.createElement("div");
   target.className = "aim-target aim-flag-rainbow";
@@ -189,27 +190,34 @@ function spawnAimTarget() {
   target.style.top = y + "px";
 
   target.onclick = () => {
-  aimScore++;
-  document.getElementById("aim-score").textContent = aimScore;
+    aimScore++;
+    document.getElementById("aim-score").textContent = aimScore;
 
-  // Добавяме анимация
-  target.classList.add("fade-out");
+    target.classList.add("fade-out");
 
-  // Пускаме звук
-  const audio = new Audio("sounds/pop.mp3");
-  audio.volume = 0.5;
-  audio.play();
+    const audio = new Audio("sounds/pop.mp3");
+    audio.volume = 0.5;
+    audio.play();
 
-  // Премахваме елемента след анимацията
-  setTimeout(() => target.remove(), 400);
-};
-
+    setTimeout(() => target.remove(), 400);
+  };
 
   aimArea.appendChild(target);
 
-  setTimeout(() => target.remove(), 900);
+  setTimeout(() => {
+    if (target.parentNode) target.remove();
+  }, 900);
 }
 
+// 🟥 Спиране на Aim Trainer
+function stopAimTrainer() {
+  clearInterval(aimInterval);
+  clearInterval(aimSpawnInterval);
+  aimArea.innerHTML = "";
+  document.getElementById("aim-time").textContent = "0";
+}
+
+// ✅ Старт на Aim Trainer
 document.getElementById("aim-start").onclick = async () => {
   aimScore = 0;
   aimTime = 20;
@@ -243,6 +251,12 @@ document.getElementById("aim-start").onclick = async () => {
 
   aimSpawnInterval = setInterval(spawnAimTarget, 450);
 };
+
+// 🟥 Бутон „Спри“
+document.getElementById("aim-stop").onclick = () => {
+  stopAimTrainer();
+};
+
 /* ============================
    RAINBOW CATCH — POPUP VERSION
 ============================ */
@@ -389,7 +403,7 @@ document.addEventListener("DOMContentLoaded", () => {
   flagGameArea = document.getElementById('flag-game-area');
   flagScoreEl = document.getElementById('flag-score');
 
-  document.getElementById('flag-game-start').addEventListener('click', openFlagGame);
+  document.getElementById('flag-game-').addEventListener('click', openFlagGame);
 
   renderLeaderboard();
   renderAimLeaderboard();
@@ -486,4 +500,5 @@ function sendMessage() {
 window.sendMessage = sendMessage;
 
 console.log("✅ script.js зареден успешно");
+
 
