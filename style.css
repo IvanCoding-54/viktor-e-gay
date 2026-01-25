@@ -712,4 +712,20 @@ body.rgb {
 .chat-send:hover {
   transform: scale(1.05);
 }
+/* Анимация при изчезване на флаг */
+.aim-target.fade-out {
+  animation: fadeOutScale 0.4s forwards;
+}
+
+@keyframes fadeOutScale {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.4);
+  }
+}
+
 
