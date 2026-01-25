@@ -29,7 +29,7 @@ async function renderLeaderboard() {
 
 async function renderAimLeaderboard() {
   const list = document.getElementById("aim-leaderboard-list");
-  if (!list) return;
+  if (!list || typeof loadAimLeaderboard !== "function") return;
 
   list.innerHTML = "";
   const entries = await loadAimLeaderboard();
@@ -173,6 +173,8 @@ let aimSpawnInterval;
 const aimArea = document.getElementById("aim-area");
 
 function spawnAimTarget() {
+  if (!aimArea) return;
+
   const target = document.createElement("div");
   target.className = "aim-target aim-flag-rainbow";
 
@@ -246,12 +248,55 @@ document.getElementById("aim-start").onclick = async () => {
 
   aimSpawnInterval = setInterval(spawnAimTarget, 450);
 };
-
 /* ============================
    RAINBOW CATCH — POPUP VERSION
 ============================ */
 
-let flagTypes = ["lgbt", "bi", "trans", "pan", "straight"];
+// Глобални променливи
+let flagScore = 0;
+let flagGameOverlay;
+let flagGameArea;
+let flagScoreEl;
+let flagSpawnInterval = null;
+let flagTimer = 120;
+let flagTimerInterval = null;
+let flagGameRunning = false;
+
+const flagTypes = ["lgbt", "bi", "trans", "pan", "straight"];
+
+// Стартиране на играта
+function openFlagGame() {
+  flagGameOverlay.classList.add("active");
+  startFlagGame();
+}
+
+function startFlagGame() {
+  flagScore = 0;
+  flagScoreEl.textContent = flagScore;
+  flagGameArea.innerHTML = "";
+  flagTimer = 120;
+  flagGameRunning = true;
+
+  document.getElementById("flag-timer").textContent = flagTimer;
+
+  flagTimerInterval = setInterval(() => {
+    flagTimer--;
+    document.getElementById("flag-timer").textContent = flagTimer;
+
+    if (flagTimer <= 0) stopFlagGame(true);
+  }, 1000);
+
+  flagSpawnInterval = setInterval(spawnFlag, 800);
+}
+
+function stopFlagGame(triggerEnd = true) {
+  clearInterval(flagTimerInterval);
+  clearInterval(flagSpawnInterval);
+  flagGameRunning = false;
+  flagGameArea.innerHTML = "";
+
+  if (triggerEnd) endFlagGame();
+}
 
 function spawnFlag() {
   const flag = document.createElement("div");
@@ -309,6 +354,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderLeaderboard();
   renderAimLeaderboard();
 });
+
 /* ============================
    AI CHAT
 ============================ */
