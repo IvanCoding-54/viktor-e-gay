@@ -1,4 +1,4 @@
-* ============================
+/* ============================
    GLOBAL RESET
 ============================ */
 * {
@@ -128,6 +128,7 @@ body.alt-theme .rgb-bg {
   border: 1px solid rgba(255,255,255,0.06);
   animation: fade-in 0.4s ease-out;
 }
+
 /* HOME LAYOUT */
 .card-header {
   margin-bottom: 18px;
@@ -565,4 +566,97 @@ body.rgb {
   transform: translateY(-10px);
   transition: opacity 0.3s ease, transform 0.3s ease;
   pointer-events: none;
+}
+
+.theme-menu.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.theme-menu button {
+  background: radial-gradient(circle at 0 0, #ff006a, transparent 60%),
+              radial-gradient(circle at 100% 100%, #00f0ff, transparent 60%);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.theme-menu button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 18px rgba(255, 0, 128, 0.5),
+              0 0 28px rgba(0, 255, 255, 0.4);
+}
+
+/* TAB SYSTEM */
+.tab {
+  display: none !important;
+}
+
+.tab.active-tab {
+  display: block !important;
+}
+
+/* АНИМАЦИИ */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-down {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes rotate-border {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* RESPONSIVE */
+@media (max-width: 800px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .tabs {
+    justify-content: flex-start;
+  }
+
+  .home-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding: 20px 16px 22px;
+  }
+
+  .title-glow {
+    font-size: 22px;
+  }
+
+  .section-title {
+    font-size: 20px;
+  }
+}
+/* Анимация при изчезване на флаг */
+.aim-target.fade-out {
+  animation: fadeOutScale 0.4s forwards;
+}
+
+@keyframes fadeOutScale {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.4);
+  }
 }
