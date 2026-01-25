@@ -15,11 +15,6 @@ async function renderLeaderboard() {
       const li = document.createElement("li");
       li.setAttribute("data-rank", i + 1);
       li.textContent = `${entry.name} – ${entry.score} точки`;
-
-      if (i === 0) li.classList.add("rank-1");
-      if (i === 1) li.classList.add("rank-2");
-      if (i === 2) li.classList.add("rank-3");
-
       list.appendChild(li);
     });
   } catch (e) {
@@ -160,7 +155,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 1000);
   });
 });
-
 /* ============================
    AIM TRAINER
 ============================ */
@@ -248,11 +242,11 @@ document.getElementById("aim-start").onclick = async () => {
 
   aimSpawnInterval = setInterval(spawnAimTarget, 450);
 };
+
 /* ============================
    RAINBOW CATCH — POPUP VERSION
 ============================ */
 
-// Глобални променливи
 let flagScore = 0;
 let flagGameOverlay;
 let flagGameArea;
@@ -264,7 +258,6 @@ let flagGameRunning = false;
 
 const flagTypes = ["lgbt", "bi", "trans", "pan", "straight"];
 
-// Стартиране на играта
 function openFlagGame() {
   flagGameOverlay.classList.add("active");
   startFlagGame();
@@ -300,19 +293,15 @@ function stopFlagGame(triggerEnd = true) {
 
 function spawnFlag() {
   const flag = document.createElement("div");
-
   const type = flagTypes[Math.floor(Math.random() * flagTypes.length)];
   flag.classList.add("flag", type);
 
   const x = Math.random() * (flagGameArea.clientWidth - 90);
   flag.style.left = `${x}px`;
-
   flag.textContent = "🏳️‍🌈";
   flagGameArea.appendChild(flag);
 
-  flag.addEventListener("animationend", () => {
-    flag.remove();
-  });
+  flag.addEventListener("animationend", () => flag.remove());
 
   flag.onclick = () => {
     if (flag.classList.contains("clicked")) return;
@@ -354,7 +343,6 @@ document.addEventListener("DOMContentLoaded", () => {
   renderLeaderboard();
   renderAimLeaderboard();
 });
-
 /* ============================
    AI CHAT
 ============================ */
