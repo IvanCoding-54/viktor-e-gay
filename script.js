@@ -29,7 +29,7 @@ async function renderLeaderboard() {
 
 async function renderAimLeaderboard() {
   const list = document.getElementById("aim-leaderboard-list");
-  if (!list || typeof loadAimLeaderboard !== "function") return;
+  if (!list) return;
 
   list.innerHTML = "";
   const entries = await loadAimLeaderboard();
@@ -58,7 +58,7 @@ function openTab(tabName, btn) {
   if (!activeSection) return;
 
   activeSection.classList.add('active-tab');
-  if (btn) btn.classList.add('active');
+  btn.classList.add('active');
 
   if (activeSection.classList.contains('reveal')) {
     activeSection.classList.add('visible');
@@ -85,7 +85,6 @@ function setTheme(theme) {
 
 window.toggleThemeMenu = toggleThemeMenu;
 window.setTheme = setTheme;
-
 /* ============================
    REVEAL ON SCROLL
 ============================ */
@@ -160,6 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 1000);
   });
 });
+
 /* ============================
    AIM TRAINER
 ============================ */
@@ -172,8 +172,6 @@ let aimSpawnInterval;
 const aimArea = document.getElementById("aim-area");
 
 function spawnAimTarget() {
-  if (!aimArea) return;
-
   const target = document.createElement("div");
   target.className = "aim-target aim-flag-rainbow";
 
@@ -191,27 +189,14 @@ function spawnAimTarget() {
   target.style.top = y + "px";
 
   target.onclick = () => {
-    if (target.classList.contains("clicked")) return;
-    target.classList.add("clicked");
-
     aimScore++;
     document.getElementById("aim-score").textContent = aimScore;
-
-    const audio = new Audio("pop.mp3");
-    audio.volume = 0.5;
-    audio.play();
-
     target.remove();
-    spawnAimTarget();
   };
 
   aimArea.appendChild(target);
 
-  setTimeout(() => {
-    if (!target.classList.contains("clicked")) {
-      target.remove();
-    }
-  }, 900);
+  setTimeout(() => target.remove(), 900);
 }
 
 document.getElementById("aim-start").onclick = async () => {
@@ -247,34 +232,50 @@ document.getElementById("aim-start").onclick = async () => {
 
   aimSpawnInterval = setInterval(spawnAimTarget, 450);
 };
-
 /* ============================
    RAINBOW CATCH — POPUP VERSION
 ============================ */
 
+let flagGameRunning = false;
 let flagScore = 0;
+let flagSpawnInterval = null;
+let flagFallInterval = null;
+let flags = [];
+
+let flagTimer = 120;
+let flagTimerInterval = null;
+
 let flagGameOverlay;
 let flagGameArea;
 let flagScoreEl;
-let flagSpawnInterval = null;
-let flagTimer = 120;
-let flagTimerInterval = null;
-let flagGameRunning = false;
 
-const flagTypes = ["lgbt", "bi", "trans", "pan", "straight"];
+const flagTypes = [
+  { type: 'lgbt', label: 'LGBTQ+' },
+  { type: 'bi', label: 'BI' },
+  { type: 'trans', label: 'TRANS' },
+  { type: 'pan', label: 'PAN' },
+  { type: 'straight', label: 'STRAIGHT' }
+];
 
 function openFlagGame() {
-  flagGameOverlay.classList.add("active");
+  flagGameOverlay.classList.add('active');
   startFlagGame();
 }
 
+function closeFlagGame() {
+  stopFlagGame(false);
+  flagGameOverlay.classList.remove('active');
+}
+
+window.closeFlagGame = closeFlagGame;
+
 function startFlagGame() {
+  flagGameRunning = true;
   flagScore = 0;
   flagScoreEl.textContent = flagScore;
-  flagGameArea.innerHTML = "";
+  flags = [];
+  flagGameArea.innerHTML = '';
   flagTimer = 120;
-  flagGameRunning = true;
-
   document.getElementById("flag-timer").textContent = flagTimer;
 
   flagTimerInterval = setInterval(() => {
@@ -284,48 +285,81 @@ function startFlagGame() {
     if (flagTimer <= 0) stopFlagGame(true);
   }, 1000);
 
-  flagSpawnInterval = setInterval(spawnFlag, 800);
+  flagSpawnInterval = setInterval(spawnFlag, 500);
+  flagFallInterval = setInterval(updateFlags, 40);
 }
 
 function stopFlagGame(triggerEnd = true) {
   clearInterval(flagTimerInterval);
   clearInterval(flagSpawnInterval);
+  clearInterval(flagFallInterval);
+
   flagGameRunning = false;
-  flagGameArea.innerHTML = "";
+  flags = [];
+  flagGameArea.innerHTML = '';
 
   if (triggerEnd) endFlagGame();
 }
 
 function spawnFlag() {
-  const flag = document.createElement("div");
-  const type = flagTypes[Math.floor(Math.random() * flagTypes.length)];
-  flag.classList.add("flag", type);
+  const count = 2;
+  for (let i = 0; i < count; i++) createFlag();
+}
 
-  const x = Math.random() * (flagGameArea.clientWidth - 90);
-  flag.style.left = `${x}px`;
-  flag.style.top = `0px`;
-  flag.textContent = "🏳️‍🌈";
-  flagGameArea.appendChild(flag);
+function createFlag() {
+  const width = flagGameArea.clientWidth;
+  const x = Math.random() * (width - 70);
 
-  flag.onclick = () => {
-    if (flag.classList.contains("clicked")) return;
-    flag.classList.add("clicked");
+  const isStraight = Math.random() < 0.2;
+  const goodFlags = flagTypes.filter(f => f.type !== 'straight');
+  const chosen = isStraight
+    ? flagTypes.find(f => f.type === 'straight')
+    : goodFlags[Math.floor(Math.random() * goodFlags.length)];
 
-    flagScore++;
-    flagScoreEl.textContent = flagScore;
+  const div = document.createElement('div');
+  div.classList.add('flag', chosen.type);
+  div.style.left = `${x}px`;
+  div.dataset.type = chosen.type;
+  div.textContent = chosen.label;
 
-    const audio = new Audio("pop.mp3");
-    audio.volume = 0.5;
-    audio.play();
-
-    flag.remove();
+  const flagObj = {
+    el: div,
+    y: -40,
+    speed: 4 + Math.random() * 3
   };
 
-  setTimeout(() => {
-    if (!flag.classList.contains("clicked")) {
-      flag.remove();
+  div.addEventListener('click', () => {
+    if (!flagGameRunning) return;
+
+    if (div.dataset.type === 'straight') {
+      stopFlagGame(true);
+    } else {
+      flagScore++;
+      flagScoreEl.textContent = flagScore;
+      div.remove();
+      flags = flags.filter(f => f !== flagObj);
     }
-  }, 1200);
+  });
+
+  flags.push(flagObj);
+  flagGameArea.appendChild(div);
+}
+
+function updateFlags() {
+  const height = flagGameArea.clientHeight;
+
+  flags.forEach(f => {
+    f.y += f.speed;
+    f.el.style.top = `${f.y}px`;
+  });
+
+  flags = flags.filter(f => {
+    if (f.y > height + 40) {
+      f.el.remove();
+      return false;
+    }
+    return true;
+  });
 }
 
 async function endFlagGame() {
