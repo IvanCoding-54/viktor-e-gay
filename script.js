@@ -15,6 +15,11 @@ async function renderLeaderboard() {
       const li = document.createElement("li");
       li.setAttribute("data-rank", i + 1);
       li.textContent = `${entry.name} – ${entry.score} точки`;
+
+      if (i === 0) li.classList.add("rank-1");
+      if (i === 1) li.classList.add("rank-2");
+      if (i === 2) li.classList.add("rank-3");
+
       list.appendChild(li);
     });
   } catch (e) {
@@ -192,21 +197,21 @@ function spawnAimTarget() {
     aimScore++;
     document.getElementById("aim-score").textContent = aimScore;
 
-    target.classList.add("fade-out");
-
     const audio = new Audio("pop.mp3");
     audio.volume = 0.5;
     audio.play();
 
-    setTimeout(() => {
-      target.remove();
-      spawnAimTarget();
-    }, 400);
+    target.remove();
+    spawnAimTarget();
   };
 
   aimArea.appendChild(target);
 
-  setTimeout(() => target.remove(), 900);
+  setTimeout(() => {
+    if (!target.classList.contains("clicked")) {
+      target.remove();
+    }
+  }, 900);
 }
 
 document.getElementById("aim-start").onclick = async () => {
@@ -298,10 +303,9 @@ function spawnFlag() {
 
   const x = Math.random() * (flagGameArea.clientWidth - 90);
   flag.style.left = `${x}px`;
+  flag.style.top = `0px`;
   flag.textContent = "🏳️‍🌈";
   flagGameArea.appendChild(flag);
-
-  flag.addEventListener("animationend", () => flag.remove());
 
   flag.onclick = () => {
     if (flag.classList.contains("clicked")) return;
@@ -314,12 +318,14 @@ function spawnFlag() {
     audio.volume = 0.5;
     audio.play();
 
-    flag.classList.add("fade-out");
-
-    setTimeout(() => {
-      flag.remove();
-    }, 400);
+    flag.remove();
   };
+
+  setTimeout(() => {
+    if (!flag.classList.contains("clicked")) {
+      flag.remove();
+    }
+  }, 1200);
 }
 
 async function endFlagGame() {
