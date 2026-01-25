@@ -209,6 +209,12 @@ function spawnAimTarget() {
 
   setTimeout(() => target.remove(), 900);
 }
+function stopAimTrainer() {
+  clearInterval(aimInterval);        // спира таймера
+  clearInterval(aimSpawnInterval);   // спира появата на знаменца
+  aimArea.innerHTML = "";            // изчиства игралната зона
+  document.getElementById("aim-time").textContent = "0"; // показва 0 секунди
+}
 
 document.getElementById("aim-start").onclick = async () => {
   aimScore = 0;
@@ -250,6 +256,10 @@ document.getElementById("aim-start").onclick = async () => {
 
   aimSpawnInterval = setInterval(spawnAimTarget, 450);
 };
+document.getElementById("aim-stop").onclick = () => {
+  stopAimTrainer();
+};
+
 
 /* ============================
    RAINBOW CATCH — POPUP VERSION
@@ -494,6 +504,7 @@ function sendMessage() {
 window.sendMessage = sendMessage;
 
 console.log("✅ script.js зареден успешно");
+
 
 
 
