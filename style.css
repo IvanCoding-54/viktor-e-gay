@@ -660,3 +660,56 @@ body.rgb {
     transform: scale(1.4);
   }
 }
+.chat-box {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.chat-title {
+  font-size: 20px;
+  margin-bottom: 12px;
+  color: #fff;
+}
+
+.chat-messages {
+  height: 200px;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 12px;
+  color: #eee;
+}
+
+.chat-input-area {
+  display: flex;
+  gap: 8px;
+}
+
+.chat-input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: #222;
+  color: #fff;
+}
+
+.chat-send {
+  padding: 10px 16px;
+  background: linear-gradient(90deg, #ff006a, #00f0ff);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.chat-send:hover {
+  transform: scale(1.05);
+}
+
