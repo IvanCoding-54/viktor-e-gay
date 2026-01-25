@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let interval = null;
   let running = false;
 
-  const btn = document.getElementById('game-');
+  const btn = document.getElementById("game-start");
   const scoreEl = document.getElementById('game-score');
   const timeEl = document.getElementById('game-time');
 
@@ -210,7 +210,7 @@ function spawnAimTarget() {
   setTimeout(() => target.remove(), 900);
 }
 
-document.getElementById("aim-").onclick = async () => {
+document.getElementById("aim-start").onclick = async () => {
   aimScore = 0;
   aimTime = 20;
 
@@ -397,7 +397,7 @@ document.addEventListener("DOMContentLoaded", () => {
   flagGameArea = document.getElementById('flag-game-area');
   flagScoreEl = document.getElementById('flag-score');
 
-  document.getElementById('flag-game-').addEventListener('click', openFlagGame);
+  document.getElementById("flag-game-start").addEventListener('click', openFlagGame);
 
   renderLeaderboard();
   renderAimLeaderboard();
@@ -494,6 +494,7 @@ function sendMessage() {
 window.sendMessage = sendMessage;
 
 console.log("✅ script.js зареден успешно");
+
 
 
 
