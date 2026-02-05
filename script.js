@@ -530,7 +530,62 @@ document.addEventListener('mousemove', (e) => {
         easing: 'ease-out'
     }).onfinish = () => particle.remove();
 });
+/* --- VIKTOR SECRET MODE LOGIC --- */
+
+let inputSequence = "";
+const secretWordEn = "viktor";
+const secretWordBg = "виктор";
+
+document.addEventListener('keydown', (e) => {
+    // Добавяме клавиша към поредицата
+    inputSequence += e.key.toLowerCase();
+
+    // Пазим само последните 10 символа
+    if (inputSequence.length > 10) {
+        inputSequence = inputSequence.substring(inputSequence.length - 10);
+    }
+
+    // Проверка за паролата (на английски или български)
+    if (inputSequence.includes(secretWordEn) || inputSequence.includes(secretWordBg)) {
+        activateViktorMode();
+        inputSequence = ""; // Ресетваме, за да може да се пусне пак
+    }
+});
+
+function activateViktorMode() {
+    // 1. Създаваме светкавицата
+    const flash = document.createElement('div');
+    flash.className = 'secret-flash';
+    document.body.appendChild(flash);
+    
+    // Премахваме светкавицата от DOM след 1 сек
+    setTimeout(() => flash.remove(), 1000);
+
+    // 2. Активираме въртенето
+    document.body.classList.add('mega-spin');
+
+    // 3. Сменяме темата на RGB (използваме твоята функция)
+    if (typeof setTheme === "function") {
+        setTheme('rgb');
+    } else {
+        document.body.classList.remove('light', 'dark');
+        document.body.classList.add('rgb');
+    }
+
+    // 4. Спираме въртенето след 10 секунди
+    setTimeout(() => {
+        document.body.classList.remove('mega-spin');
+        // Връщаме контрола над мишката
+        document.body.style.pointerEvents = "auto"; 
+        alert("Добре дошли в пълния спектър на Виктор! 🌈");
+    }, 10000);
+
+    console.log("🌪️ VIKTOR MODE: ACTIVATED");
+}
+
+
 console.log("✅ script.js зареден успешно");
+
 
 
 
