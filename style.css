@@ -766,5 +766,12 @@ body.rgb {
   80% { clip: rect(2px, 9999px, 60px, 0); }
   100% { clip: rect(90px, 9999px, 100px, 0); }
 }
+.particle {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    box-shadow: 0 0 10px currentColor;
+}
 
 
