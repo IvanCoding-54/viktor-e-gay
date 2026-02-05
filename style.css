@@ -773,5 +773,58 @@ body.rgb {
     z-index: 9999;
     box-shadow: 0 0 10px currentColor;
 }
+/* --- VIKTOR SECRET MODE STYLES --- */
+
+/* Светкавица при активация */
+.secret-flash {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: white;
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    animation: flash-animation 1s ease-out;
+}
+
+@keyframes flash-animation {
+    0% { opacity: 0.9; }
+    100% { opacity: 0; }
+}
+
+/* Класът, който завърта целия сайт */
+.mega-spin {
+    overflow-x: hidden;
+    pointer-events: none; /* Спираме кликовете по време на въртене, за да няма бъгове */
+    animation: ultimate-rotation 10s cubic-bezier(0.45, 0.05, 0.55, 0.95) forwards;
+}
+
+@keyframes ultimate-rotation {
+    0% { 
+        transform: scale(1) rotate(0deg); 
+        filter: hue-rotate(0deg);
+    }
+    15% {
+        transform: scale(1.3) rotate(720deg);
+    }
+    50% {
+        transform: scale(0.5) rotate(1800deg);
+        filter: hue-rotate(180deg);
+    }
+    85% {
+        transform: scale(1.2) rotate(3240deg);
+    }
+    100% { 
+        transform: scale(1) rotate(3600deg); 
+        filter: hue-rotate(360deg);
+    }
+}
+
+/* Корекция на фона при въртене */
+.mega-spin .rgb-bg {
+    transform: scale(3);
+}
 
 
