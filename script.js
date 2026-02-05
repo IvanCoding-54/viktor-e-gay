@@ -502,8 +502,36 @@ function sendMessage() {
 }
 
 window.sendMessage = sendMessage;
+document.addEventListener('mousemove', (e) => {
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    document.body.appendChild(particle);
 
+    const size = Math.random() * 8 + 2;
+    particle.style.width = `${size}px`;
+    particle.style.height = `${size}px`;
+    
+    // Случаен RGB цвят
+    const colors = ['#ff006a', '#00f0ff', '#7cff00', '#ffed00'];
+    particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+
+    particle.style.left = `${e.clientX}px`;
+    particle.style.top = `${e.clientY}px`;
+
+    // Анимация на движението
+    const destinationX = (Math.random() - 0.5) * 100;
+    const destinationY = (Math.random() - 0.5) * 100;
+
+    particle.animate([
+        { transform: 'translate(0, 0)', opacity: 1 },
+        { transform: `translate(${destinationX}px, ${destinationY}px)`, opacity: 0 }
+    ], {
+        duration: 1000,
+        easing: 'ease-out'
+    }).onfinish = () => particle.remove();
+});
 console.log("✅ script.js зареден успешно");
+
 
 
 
