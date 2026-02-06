@@ -1590,18 +1590,13 @@ body.ocean .card {
   }
 
 }
-.cursor-follower {
-  position: fixed;
-  width: 10px;
-  height: 10px;
-  background: #00f0ff;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 10000;
-  box-shadow: 0 0 15px #00f0ff, 0 0 30px #ff006a;
-  transition: transform 0.1s ease-out;
+.particle {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    box-shadow: 0 0 10px currentColor;
 }
-
 
 
 
