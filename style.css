@@ -324,20 +324,44 @@ body.alt-theme .rgb-bg {
 
 
 
+/* Glitch Анимация */
 .title-glow {
+  position: relative;
+  display: inline-block;
+}
 
-  font-size: 26px;
+.title-glow::before,
+.title-glow::after {
+  content: "Добре дошли в света на Виктор";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+}
 
-  margin-bottom: 4px;
+.title-glow::before {
+  left: 2px;
+  text-shadow: -2px 0 #ff006a;
+  clip: rect(44px, 450px, 56px, 0);
+  animation: glitch-anim 5s infinite linear alternate-reverse;
+}
 
-  background: linear-gradient(90deg, #ff006a, #00f0ff, #7cff00);
+.title-glow::after {
+  left: -2px;
+  text-shadow: -2px 0 #00f0ff;
+  clip: rect(10px, 450px, 30px, 0);
+  animation: glitch-anim 3s infinite linear alternate-reverse;
+}
 
-  -webkit-background-clip: text;
-
-  color: transparent;
-
-  text-shadow: 0 0 18px rgba(0,255,255,0.6);
-
+@keyframes glitch-anim {
+  0% { clip: rect(31px, 9999px, 94px, 0); }
+  20% { clip: rect(62px, 9999px, 42px, 0); }
+  40% { clip: rect(10px, 9999px, 85px, 0); }
+  60% { clip: rect(55px, 9999px, 7px, 0); }
+  80% { clip: rect(2px, 9999px, 60px, 0); }
+  100% { clip: rect(90px, 9999px, 100px, 0); }
 }
 
 
@@ -1577,6 +1601,7 @@ body.ocean .card {
   box-shadow: 0 0 15px #00f0ff, 0 0 30px #ff006a;
   transition: transform 0.1s ease-out;
 }
+
 
 
 
