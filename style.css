@@ -621,6 +621,9 @@ body.ocean .card {
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  z-index: 9999;
 }
 
 
@@ -628,11 +631,6 @@ body.ocean .card {
   transform: translateY(-2px);
   box-shadow: 0 0 18px rgba(255, 0, 128, 0.5),
               0 0 28px rgba(0, 255, 255, 0.4);
-}
-.theme-menu button {
-    position: relative;
-    overflow: hidden;
-    z-index: 1;
 }
 
 .theme-menu button::after {
@@ -881,6 +879,7 @@ body.ocean .card {
 .mega-spin .rgb-bg {
     transform: scale(3);
 }
+
 
 
 
