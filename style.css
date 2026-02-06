@@ -1,5 +1,5 @@
 /* ==========================================================================
-   1. GLOBAL RESET & BASE STYLES
+   1. ОСНОВНИ НАСТРОЙКИ
    ========================================================================== */
 * {
     box-sizing: border-box;
@@ -12,81 +12,101 @@ body {
     background: #05060a;
     color: #f5f5f5;
     min-height: 100vh;
-    transition: background 0.8s ease, color 0.5s ease, opacity 0.2s ease;
+    transition: background 0.5s ease;
     overflow-x: hidden;
 }
 
+/* Фонът */
 .rgb-bg {
     position: fixed;
     inset: 0;
-    background:
-        radial-gradient(circle at 0% 0%, rgba(0,255,255,0.18) 0, transparent 55%),
-        radial-gradient(circle at 100% 0%, rgba(255,0,128,0.18) 0, transparent 55%),
-        radial-gradient(circle at 0% 100%, rgba(0,255,128,0.18) 0, transparent 55%),
-        radial-gradient(circle at 100% 100%, rgba(255,255,0,0.18) 0, transparent 55%);
-    filter: blur(40px);
-    opacity: 0.9;
+    background: radial-gradient(circle at 0% 0%, rgba(0,255,255,0.1), transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(255,0,128,0.1), transparent 50%);
     z-index: -1;
 }
 
 /* ==========================================================================
-   2. NAVIGATION & THEME TOGGLE (FIXED ISSUES)
+   2. НАВБАР (ТУК БЕШЕ МАЗАЛОТО)
    ========================================================================== */
 .navbar {
-    background: linear-gradient(135deg, rgba(10,10,15,0.95), rgba(15,15,25,0.95));
-    border-radius: 18px;
-    padding: 14px 18px;
+    max-width: 1100px;
+    margin: 20px auto;
+    padding: 15px 20px;
+    background: rgba(15, 15, 25, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
     display: flex;
+    flex-wrap: wrap; /* За да не излизат извън екрана на телефон */
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
-    backdrop-filter: blur(18px);
-    box-shadow: 0 18px 40px rgba(0,0,0,0.7);
-    margin: 32px auto 24px;
-    max-width: 1100px;
-    border: 1px solid rgba(255,255,255,0.06);
+    gap: 15px;
+    backdrop-filter: blur(10px);
 }
 
 .logo {
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    background: linear-gradient(90deg, #ff006a, #00f0ff, #7cff00);
+    font-size: 24px;
+    font-weight: 900;
+    background: linear-gradient(90deg, #ff006a, #00f0ff);
     -webkit-background-clip: text;
     color: transparent;
 }
 
-.theme-toggle {
-    border-radius: 999px;
-    border: 1px solid rgba(255,255,255,0.3);
-    background: rgba(15,15,25,0.9);
-    color: #f0f0f0;
-    padding: 8px 16px;
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.2s ease;
+/* Контейнер за бутоните */
+.tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
 }
 
+.tab-btn {
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.tab-btn:hover, .tab-btn.active {
+    background: #ff006a;
+    border-color: #ff006a;
+    box-shadow: 0 0 15px rgba(255, 0, 106, 0.5);
+}
+
+/* Бутонът за теми */
+.theme-toggle {
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid #00f0ff;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* ==========================================================================
+   3. МЕНЮТО ЗА ТЕМИ (FIXED)
+   ========================================================================== */
 .theme-menu {
     position: fixed;
-    top: 85px;
+    top: 90px;
     right: 20px;
-    background: #0a0a0f;
+    background: #0d0d12;
     border: 1px solid #ff006a;
     padding: 15px;
-    border-radius: 18px;
-    box-shadow: 0 15px 50px rgba(0,0,0,0.9), 0 0 20px rgba(255,0,106,0.3);
-    backdrop-filter: blur(20px);
-    z-index: 99999999;
+    border-radius: 15px;
+    z-index: 100000; /* НАЙ-ОТГОРЕ */
     display: flex;
     flex-direction: column;
     gap: 10px;
     opacity: 0;
-    transform: translateY(-20px);
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform: translateY(-10px);
     pointer-events: none;
-    min-width: 180px;
+    transition: 0.3s ease;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
 }
 
 .theme-menu.visible {
@@ -96,105 +116,64 @@ body {
 }
 
 .theme-menu button {
-    width: 100%;
-    background: linear-gradient(135deg, #ff006a, #00f0ff);
-    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
     border: none;
-    padding: 10px 15px;
-    border-radius: 12px;
-    font-weight: 600;
+    background: linear-gradient(90deg, #ff006a, #00f0ff);
+    color: white;
+    font-weight: bold;
     cursor: pointer;
-    transition: transform 0.2s ease;
 }
 
 /* ==========================================================================
-   3. CONTENT & CARDS
+   4. КАРТИТЕ И СЪДЪРЖАНИЕТО
    ========================================================================== */
-.app { max-width: 1100px; margin: 0 auto; padding: 0 16px 40px; }
+.app { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
 
 .card {
-    background: rgba(8,8,14,0.96);
-    border-radius: 20px;
-    padding: 24px;
-    box-shadow: 0 22px 50px rgba(0,0,0,0.9);
-    border: 1px solid rgba(255,255,255,0.06);
-    position: relative;
-    margin-bottom: 20px;
+    background: rgba(10, 10, 15, 0.95);
+    border-radius: 25px;
+    padding: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    margin-bottom: 30px;
 }
 
 .title-glow {
-    font-size: 26px;
-    background: linear-gradient(90deg, #ff006a, #00f0ff, #7cff00);
-    -webkit-background-clip: text;
-    color: transparent;
-    text-shadow: 0 0 18px rgba(0,255,255,0.6);
+    font-size: 28px;
+    margin-bottom: 15px;
+    color: #00f0ff;
 }
 
-/* ==========================================================================
-   4. GAMES (AIM TRAINER & FLAG CATCH)
-   ========================================================================== */
-.flag-game-overlay {
-    position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8);
-    display: none; justify-content: center; align-items: center; z-index: 999999;
-}
-.flag-game-overlay.active { display: flex; }
-
-.flag-game-window {
-    background: #111; border: 2px solid #ff00ff; border-radius: 16px;
-    width: 340px; height: 450px; padding: 15px; position: relative;
-}
-
-.aim-area {
-    width: 100%; height: 260px; border-radius: 14px;
-    background: #05050f; border: 1px solid rgba(255, 255, 255, 0.12);
-    position: relative; overflow: hidden;
-}
-
-.flag { position: absolute; padding: 10px; border-radius: 8px; cursor: pointer; }
-.flag.lgbt { background: linear-gradient(to bottom, #ff0000, #ff8c00, #ffff00, #008000, #0000ff, #8b00ff); }
-
-/* ==========================================================================
-   5. CHAT & LEADERBOARD
-   ========================================================================== */
-.chat-box { background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 16px; }
-.chat-messages { height: 200px; overflow-y: auto; background: rgba(0, 0, 0, 0.3); padding: 10px; margin-bottom: 10px; }
-
-.leaderboard {
-    margin-top: 20px; padding: 20px; background: rgba(255, 255, 255, 0.06);
-    border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.15);
-}
-#leaderboard-list li {
-    padding: 10px; margin-bottom: 8px; background: rgba(255, 255, 255, 0.08);
-    border-radius: 10px; display: flex; justify-content: space-between;
-}
-
-/* ==========================================================================
-   6. GIF STYLES
-   ========================================================================== */
+/* Снимката (завъртяната) */
 .gif-frame {
-    position: relative; width: 260px; padding: 4px; border-radius: 18px;
-    background: conic-gradient(from 180deg, #ff006a, #00f0ff, #7cff00, #ff006a);
-    animation: rotate-border 8s linear infinite; display: flex; justify-content: center;
+    width: 280px;
+    margin: 20px auto;
+    padding: 5px;
+    background: linear-gradient(45deg, #ff006a, #00f0ff);
+    border-radius: 20px;
+    transform: rotate(-3deg);
 }
-.gif { width: 240px; border-radius: 14px; }
+
+.gif {
+    width: 100%;
+    border-radius: 15px;
+    display: block;
+}
 
 /* ==========================================================================
-   7. THEMES CONFIGURATION
+   5. ТЕМИ
    ========================================================================== */
-body.light { background: #f5f5f5; color: #222; }
-body.dark { background: #05060a; color: #eee; }
-body.rgb { background: linear-gradient(45deg, #ff0000, #00ff00, #0000ff); color: white; }
 body.sakura { background: #1a0a1a; color: #ffb7c5; }
-body.sakura .card { border-color: #ff1493; }
-body.cyber { background: #000; color: #f0f; }
-body.cyber .card { border: 2px solid #0ff; box-shadow: 5px 5px 0px #f0f; }
+body.cyber { background: #000; color: #ffee00; }
+body.cyber .card { border: 2px solid #ffee00; }
 body.ocean { background: #001219; color: #94d2bd; }
 
-/* ==========================================================================
-   8. ANIMATIONS
-   ========================================================================== */
-@keyframes rotate-border { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-@keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-.mega-spin { animation: ultimate-rotation 10s forwards; pointer-events: none; }
-@keyframes ultimate-rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(3600deg); } }
+/* Анимация за въртенето на Виктор */
+.mega-spin {
+    animation: spin-anim 10s linear forwards;
+}
+@keyframes spin-anim {
+    from { transform: rotate(0deg) scale(1); }
+    to { transform: rotate(3600deg) scale(1); }
+}
