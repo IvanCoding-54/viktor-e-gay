@@ -1096,6 +1096,50 @@ body.rgb {
   color: white;
 
 }
+body {
+    transition: background 0.8s cubic-bezier(0.4, 0, 0.2, 1), 
+                color 0.5s ease;
+}
+
+/* Нови Теми */
+
+/* 🌸 Midnight Sakura */
+body.sakura {
+    background: #1a0a1a;
+    color: #ffb7c5;
+}
+body.sakura .card {
+    background: rgba(45, 20, 45, 0.9);
+    border-color: #ff1493;
+    box-shadow: 0 0 20px rgba(255, 20, 147, 0.3);
+}
+
+/* ⚡ Cyberpunk */
+body.cyber {
+    background: #000;
+    color: #f0f;
+}
+body.cyber .card {
+    background: #050505;
+    border: 2px solid #0ff;
+    box-shadow: 5px 5px 0px #f0f; /* Ретро отместване */
+}
+body.cyber .tab-btn.active {
+    background: #ffee00;
+    color: #000;
+    box-shadow: 0 0 15px #ffee00;
+}
+
+/* 🌊 Ocean Wave */
+body.ocean {
+    background: #001219;
+    color: #94d2bd;
+}
+body.ocean .card {
+    background: rgba(0, 95, 115, 0.2);
+    border-color: #0a9396;
+    backdrop-filter: blur(15px);
+}
 
 
 
@@ -1469,6 +1513,7 @@ body.rgb {
   }
 
 }
+
 
 
 
