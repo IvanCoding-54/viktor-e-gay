@@ -1134,7 +1134,7 @@ body.rgb {
   transition: opacity 0.3s ease, transform 0.3s ease;
 
   pointer-events: none;
-
+  
 }
 
 
@@ -1174,20 +1174,33 @@ body.rgb {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 
 }
-
-
-
 .theme-menu button:hover {
-
   transform: translateY(-2px);
-
   box-shadow: 0 0 18px rgba(255, 0, 128, 0.5),
-
               0 0 28px rgba(0, 255, 255, 0.4);
-
 }
 
+/* Сложи НОВИЯ код ТУК: */
 
+.theme-menu button {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.theme-menu button::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: 0.5s;
+    z-index: -1;
+}
+
+.theme-menu button:hover::after {
+    left: 100%;
+}
 
 /* TAB SYSTEM */
 
@@ -1456,6 +1469,7 @@ body.rgb {
   }
 
 }
+
 
 
 
