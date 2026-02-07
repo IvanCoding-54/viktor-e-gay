@@ -2601,6 +2601,228 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderLeaderboard();
   renderAimLeaderboard();
+  
+  // ============================
+// MOBILE MENU TOGGLE
+// Add this to your script.js file
+// ============================
+
+/**
+ * Mobile Menu Functionality
+ * This code handles the hamburger menu on mobile devices
+ */
+
+// Wait for DOM to be ready
+document.addEventListener('DOMContentLoaded', function() {
+  initMobileMenu();
+});
+
+function initMobileMenu() {
+  const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+  const tabs = document.querySelector('.tabs');
+  const tabButtons = document.querySelectorAll('.tab-btn');
+  
+  // Toggle mobile menu when hamburger is clicked
+  if (mobileMenuToggle) {
+    mobileMenuToggle.addEventListener('click', function() {
+      const isOpen = tabs.classList.contains('mobile-open');
+      
+      if (isOpen) {
+        closeMobileMenu();
+      } else {
+        openMobileMenu();
+      }
+    });
+  }
+  
+  // Close menu when any tab is clicked (only on mobile)
+  tabButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      if (window.innerWidth <= 767) {
+        closeMobileMenu();
+      }
+    });
+  });
+  
+  // Close menu when clicking outside (only on mobile)
+  document.addEventListener('click', function(event) {
+    if (window.innerWidth <= 767) {
+      const isClickInsideNav = event.target.closest('.navbar');
+      const menuIsOpen = tabs.classList.contains('mobile-open');
+      
+      if (!isClickInsideNav && menuIsOpen) {
+        closeMobileMenu();
+      }
+    }
+  });
+  
+  // Handle window resize - reset menu state
+  let resizeTimer;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function() {
+      if (window.innerWidth > 767) {
+        // Desktop view - ensure menu is visible
+        tabs.classList.remove('mobile-open');
+        if (mobileMenuToggle) {
+          mobileMenuToggle.classList.remove('active');
+        }
+      }
+    }, 250);
+  });
+}
+
+function openMobileMenu() {
+  const tabs = document.querySelector('.tabs');
+  const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+  
+  tabs.classList.add('mobile-open');
+  if (mobileMenuToggle) {
+    mobileMenuToggle.classList.add('active');
+    mobileMenuToggle.setAttribute('aria-expanded', 'true');
+  }
+  
+  // Prevent body scroll when menu is open
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMobileMenu() {
+  const tabs = document.querySelector('.tabs');
+  const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+  
+  tabs.classList.remove('mobile-open');
+  if (mobileMenuToggle) {
+    mobileMenuToggle.classList.remove('active');
+    mobileMenuToggle.setAttribute('aria-expanded', 'false');
+  }
+  
+  // Re-enable body scroll
+  document.body.style.overflow = '';
+}
+
+// ============================
+// TOUCH GESTURES (OPTIONAL ENHANCEMENT)
+// ============================
+
+/**
+ * Swipe gesture to close mobile menu
+ * Swipe up to close the menu on mobile
+ */
+function addSwipeGesture() {
+  const tabs = document.querySelector('.tabs');
+  let touchStartY = 0;
+  let touchEndY = 0;
+  
+  tabs.addEventListener('touchstart', function(e) {
+    touchStartY = e.changedTouches[0].screenY;
+  }, { passive: true });
+  
+  tabs.addEventListener('touchend', function(e) {
+    touchEndY = e.changedTouches[0].screenY;
+    handleSwipe();
+  }, { passive: true });
+  
+  function handleSwipe() {
+    const swipeDistance = touchStartY - touchEndY;
+    const menuIsOpen = tabs.classList.contains('mobile-open');
+    
+    // If swiped up more than 50px and menu is open
+    if (swipeDistance > 50 && menuIsOpen) {
+      closeMobileMenu();
+    }
+  }
+}
+
+// Initialize swipe gesture (optional)
+document.addEventListener('DOMContentLoaded', function() {
+  if (window.innerWidth <= 767) {
+    addSwipeGesture();
+  }
+});
+
+// ============================
+// VIEWPORT HEIGHT FIX FOR MOBILE
+// ============================
+
+/**
+ * Fix for mobile browsers where viewport height changes with address bar
+ * This ensures full-height elements work properly
+ */
+function setMobileVH() {
+  const vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
+
+// Set on load and resize
+window.addEventListener('load', setMobileVH);
+window.addEventListener('resize', setMobileVH);
+
+// Then in your CSS, you can use:
+// height: calc(var(--vh, 1vh) * 100);
+// instead of: height: 100vh;
+
+// ============================
+// PREVENT ZOOM ON INPUT FOCUS (iOS)
+// ============================
+
+/**
+ * Prevents iOS from zooming in when input fields are focused
+ * by temporarily setting the viewport to user-scalable=no
+ */
+function preventIOSZoom() {
+  const inputs = document.querySelectorAll('input, textarea, select');
+  
+  inputs.forEach(input => {
+    input.addEventListener('focus', function() {
+      const viewport = document.querySelector('meta[name=viewport]');
+      if (viewport) {
+        viewport.setAttribute('content', 
+          'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+      }
+    });
+    
+    input.addEventListener('blur', function() {
+      const viewport = document.querySelector('meta[name=viewport]');
+      if (viewport) {
+        viewport.setAttribute('content', 
+          'width=device-width, initial-scale=1.0');
+      }
+    });
+  });
+}
+
+// Only apply on iOS devices
+if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+  document.addEventListener('DOMContentLoaded', preventIOSZoom);
+}
+
+// ============================
+// USAGE INSTRUCTIONS
+// ============================
+
+/*
+To use this code:
+
+1. Add the HTML for the hamburger button in your navbar (index.html):
+   Place this after the logo:
+   
+   <button class="mobile-menu-toggle" id="mobile-menu-toggle" 
+           aria-label="Toggle menu" aria-expanded="false">
+     <span></span>
+     <span></span>
+     <span></span>
+   </button>
+
+2. Make sure you're using the enhanced CSS file (style-enhanced.css)
+
+3. Add this entire file's content to your script.js file
+   OR include it as a separate file:
+   <script src="mobile-menu.js"></script>
+
+4. Test on mobile devices or in Chrome DevTools mobile view
+
+That's it! Your mobile menu should now work perfectly.
+*/
 
   console.log("✅ Viktor.RGB готов! 🌈");
   console.log("🎮 Тайна: Кликни върху лого-то VIKTOR за secret game!");
