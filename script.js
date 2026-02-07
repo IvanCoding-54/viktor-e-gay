@@ -546,6 +546,10 @@ function createFlag() {
     } else {
       flagScore++;
       if (flagScoreEl) flagScoreEl.textContent = flagScore;
+      
+      // Play pop sound
+      playPopSound();
+      
       div.remove();
       flags = flags.filter(f => f !== flagObj);
     }
