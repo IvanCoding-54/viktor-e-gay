@@ -98,53 +98,18 @@ function openTab(tabName, btn) {
   // Prevent clicking same tab
   if (activeTab && activeTab.id === tabName) return;
   
-  // Add page transition overlay
-  const transitionOverlay = document.createElement('div');
-  transitionOverlay.className = 'page-transition-overlay';
-  document.body.appendChild(transitionOverlay);
+  // Simple fade transition
+  allTabs.forEach(t => {
+    t.classList.remove('active-tab');
+  });
   
-  // Fade out current tab with slide
-  if (activeTab) {
-    activeTab.classList.add('tab-exit');
+  const newActiveTab = document.getElementById(tabName);
+  if (newActiveTab) {
+    newActiveTab.classList.add('active-tab');
     
-    setTimeout(() => {
-      allTabs.forEach(t => {
-        t.classList.remove('active-tab', 'tab-exit', 'tab-enter');
-      });
-      
-      const newActiveTab = document.getElementById(tabName);
-      if (newActiveTab) {
-        newActiveTab.classList.add('active-tab', 'tab-enter');
-        
-        if (newActiveTab.classList.contains('reveal')) {
-          newActiveTab.classList.add('visible');
-        }
-        
-        // Remove enter animation after it completes
-        setTimeout(() => {
-          newActiveTab.classList.remove('tab-enter');
-        }, 500);
-      }
-      
-      // Remove transition overlay
-      setTimeout(() => {
-        transitionOverlay.remove();
-      }, 300);
-    }, 300);
-  } else {
-    // First tab load
-    allTabs.forEach(t => t.classList.remove('active-tab'));
-    const newActiveTab = document.getElementById(tabName);
-    if (newActiveTab) {
-      newActiveTab.classList.add('active-tab', 'tab-enter');
-      if (newActiveTab.classList.contains('reveal')) {
-        newActiveTab.classList.add('visible');
-      }
-      setTimeout(() => {
-        newActiveTab.classList.remove('tab-enter');
-      }, 500);
+    if (newActiveTab.classList.contains('reveal')) {
+      newActiveTab.classList.add('visible');
     }
-    transitionOverlay.remove();
   }
   
   document.querySelectorAll('.tab-btn').forEach(b => {
@@ -199,29 +164,9 @@ function setTheme(theme) {
     return;
   }
 
-  // Add theme transition overlay
-  const themeTransition = document.createElement('div');
-  themeTransition.className = 'theme-transition-overlay';
-  document.body.appendChild(themeTransition);
-  
-  // Trigger animation
-  setTimeout(() => {
-    themeTransition.classList.add('active');
-  }, 10);
-  
-  // Change theme at peak of animation
-  setTimeout(() => {
-    body.classList.remove(...validThemes);
-    body.classList.add(theme);
-  }, 200);
-  
-  // Remove overlay
-  setTimeout(() => {
-    themeTransition.classList.remove('active');
-    setTimeout(() => {
-      themeTransition.remove();
-    }, 300);
-  }, 400);
+  // Simply change theme - CSS transitions will handle the fade
+  body.classList.remove(...validThemes);
+  body.classList.add(theme);
   
   const menu = document.getElementById("theme-menu");
   if (menu) menu.classList.remove("visible");
@@ -1741,8 +1686,97 @@ function initMessageBoard() {
   const searchInput = document.getElementById('message-search');
   const clearSearch = document.getElementById('clear-search');
   const sortSelect = document.getElementById('message-sort');
+  const usernameInput = document.getElementById('username-input');
+  const saveUsernameBtn = document.getElementById('save-username-btn');
+  const currentUsername = document.getElementById('current-username');
+  const imageBtn = document.getElementById('message-image-btn');
+  const imageInput = document.getElementById('message-image-input');
+  const imagePreview = document.getElementById('message-image-preview');
+  const previewImg = document.getElementById('message-preview-img');
+  const removeImageBtn = document.getElementById('message-remove-image');
+  
+  let selectedImageFile = null;
   
   if (!postBtn || !messageInput || !charCount) return;
+  
+  // Image upload button click
+  if (imageBtn && imageInput) {
+    imageBtn.addEventListener('click', () => {
+      imageInput.click();
+    });
+    
+    imageInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        // Validate file
+        if (file.size > 5 * 1024 * 1024) {
+          showMessageToast('Image too large. Max 5MB.', 'error');
+          return;
+        }
+        
+        const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        if (!validTypes.includes(file.type)) {
+          showMessageToast('Invalid file type. Use JPG, PNG, GIF or WEBP.', 'error');
+          return;
+        }
+        
+        selectedImageFile = file;
+        
+        // Show preview
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          previewImg.src = e.target.result;
+          imagePreview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+    
+    // Remove image
+    if (removeImageBtn) {
+      removeImageBtn.addEventListener('click', () => {
+        selectedImageFile = null;
+        imagePreview.style.display = 'none';
+        imageInput.value = '';
+      });
+    }
+  }
+  
+  // Load saved username
+  const savedUsername = localStorage.getItem('viktor-username');
+  if (savedUsername) {
+    usernameInput.value = savedUsername;
+    usernameInput.style.display = 'none';
+    saveUsernameBtn.textContent = 'Change Name';
+    currentUsername.textContent = `Posting as: ${savedUsername}`;
+    currentUsername.style.display = 'inline-block';
+  }
+  
+  // Save username button
+  if (saveUsernameBtn) {
+    saveUsernameBtn.addEventListener('click', () => {
+      const username = usernameInput.value.trim();
+      
+      if (usernameInput.style.display === 'none') {
+        // Show input to change name
+        usernameInput.style.display = 'block';
+        saveUsernameBtn.textContent = 'Save Name';
+        currentUsername.style.display = 'none';
+      } else {
+        // Save name
+        if (username && username.length >= 2) {
+          localStorage.setItem('viktor-username', username);
+          usernameInput.style.display = 'none';
+          saveUsernameBtn.textContent = 'Change Name';
+          currentUsername.textContent = `Posting as: ${username}`;
+          currentUsername.style.display = 'inline-block';
+          showMessageToast(`✅ Username saved as: ${username}`, 'success');
+        } else {
+          showMessageToast('Name must be at least 2 characters', 'error');
+        }
+      }
+    });
+  }
   
   messageInput.addEventListener('input', () => {
     const length = messageInput.value.length;
@@ -1753,40 +1787,57 @@ function initMessageBoard() {
   postBtn.addEventListener('click', async () => {
     const message = messageInput.value.trim();
     
-    if (!message) {
-      showMessageToast('Напиши нещо преди да публикуваш!', 'error');
+    if (!message && !selectedImageFile) {
+      showMessageToast('Write something or add an image!', 'error');
       return;
     }
     
-    if (message.length < 3) {
-      showMessageToast('Съобщението е твърде кратко!', 'error');
+    if (message && message.length < 3) {
+      showMessageToast('Message is too short!', 'error');
       return;
     }
     
     try {
       postBtn.disabled = true;
-      postBtn.textContent = 'Публикуване...';
+      postBtn.textContent = selectedImageFile ? 'Uploading...' : 'Posting...';
       
-      await postMessage(message, replyingTo);
+      let imageURL = null;
+      
+      // Upload image if selected
+      if (selectedImageFile) {
+        try {
+          imageURL = await uploadImage(selectedImageFile);
+        } catch (err) {
+          showMessageToast(`❌ ${err.message}`, 'error');
+          postBtn.disabled = false;
+          postBtn.textContent = 'Post Message 🌈';
+          return;
+        }
+      }
+      
+      await postMessage(message || '', replyingTo, imageURL);
       
       messageInput.value = '';
       charCount.textContent = '0/500';
+      selectedImageFile = null;
+      imagePreview.style.display = 'none';
+      imageInput.value = '';
       
       if (replyingTo) {
         cancelReply();
-        showMessageToast('✅ Отговорът е публикуван!', 'success');
+        showMessageToast('✅ Reply posted!', 'success');
       } else {
-        showMessageToast('✅ Съобщението е публикувано!', 'success');
+        showMessageToast('✅ Message posted!', 'success');
       }
       
       await renderMessages();
       
     } catch (e) {
-      console.error('Грешка при публикуване:', e);
-      showMessageToast('❌ Грешка при публикуване. Опитай отново.', 'error');
+      console.error('Error posting:', e);
+      showMessageToast('❌ Error posting. Try again.', 'error');
     } finally {
       postBtn.disabled = false;
-      postBtn.textContent = 'Публикувай анонимно 🌈';
+      postBtn.textContent = 'Post Message 🌈';
     }
   });
   
@@ -1925,13 +1976,19 @@ function createMessageElement(msg, isReply = false) {
   const timeAgo = getTimeAgo(msg.timestamp);
   const reactions = msg.reactions || { heart: 0, rainbow: 0, fire: 0 };
   const replyCount = msg.replyCount || 0;
+  const username = msg.username || 'Anonymous';
   
   messageEl.innerHTML = `
     <div class="message-board-item-header">
-      <span class="message-board-item-author">${isReply ? '↳ Отговор' : 'Анонимен'} 🌈</span>
+      <span class="message-board-item-author">${isReply ? '↳ ' : ''}${escapeHtml(username)} 🌈</span>
       <span class="message-board-item-time">${timeAgo}</span>
     </div>
     <div class="message-board-item-text">${escapeHtml(msg.message)}</div>
+    ${msg.imageURL ? `
+      <div class="message-board-item-image" data-image="${msg.imageURL}">
+        <img src="${msg.imageURL}" alt="Uploaded image" loading="lazy">
+      </div>
+    ` : ''}
     <div class="message-board-item-actions">
       <button class="message-reaction-btn ${reactions.heart > 0 ? 'active' : ''}" data-reaction="heart" data-id="${msg.id}">
         ❤️ <span class="reaction-count">${reactions.heart || ''}</span>
@@ -1944,7 +2001,7 @@ function createMessageElement(msg, isReply = false) {
       </button>
       ${!isReply ? `
         <button class="message-reply-btn" data-id="${msg.id}">
-          💬 Отговори ${replyCount > 0 ? `(${replyCount})` : ''}
+          💬 Reply ${replyCount > 0 ? `(${replyCount})` : ''}
         </button>
       ` : ''}
     </div>
@@ -1972,6 +2029,15 @@ function createMessageElement(msg, isReply = false) {
   if (replyBtn) {
     replyBtn.addEventListener('click', () => {
       startReply(msg.id, msg.message);
+    });
+  }
+  
+  // Image lightbox
+  const imageContainer = messageEl.querySelector('.message-board-item-image');
+  if (imageContainer) {
+    imageContainer.addEventListener('click', () => {
+      const imageURL = imageContainer.dataset.image;
+      openLightbox(imageURL);
     });
   }
   
@@ -2052,6 +2118,45 @@ function showMessageToast(message, type = 'info') {
     setTimeout(() => toast.remove(), 300);
   }, 3000);
 }
+
+// ========================================
+// IMAGE LIGHTBOX
+// ========================================
+
+function openLightbox(imageURL) {
+  const lightbox = document.getElementById('image-lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  
+  if (lightbox && lightboxImg) {
+    lightboxImg.src = imageURL;
+    lightbox.classList.add('active');
+  }
+}
+
+function closeLightbox() {
+  const lightbox = document.getElementById('image-lightbox');
+  if (lightbox) {
+    lightbox.classList.remove('active');
+  }
+}
+
+// Initialize lightbox close handlers
+document.addEventListener('DOMContentLoaded', () => {
+  const lightbox = document.getElementById('image-lightbox');
+  const lightboxClose = document.getElementById('lightbox-close');
+  
+  if (lightbox) {
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) {
+        closeLightbox();
+      }
+    });
+  }
+  
+  if (lightboxClose) {
+    lightboxClose.addEventListener('click', closeLightbox);
+  }
+});
 
 // ========================================
 // SECRET SNAKE GAME
