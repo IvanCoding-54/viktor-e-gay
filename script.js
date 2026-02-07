@@ -518,7 +518,7 @@ function createFlag() {
   if (!flagGameArea) return;
   
   const width = flagGameArea.clientWidth;
-  const x = Math.random() * (width - 70);
+  const x = Math.random() * (width - 110);
 
   const isStraight = Math.random() < 0.2;
   const goodFlags = flagTypes.filter(f => f.type !== 'straight');
