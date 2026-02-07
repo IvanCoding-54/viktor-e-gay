@@ -53,6 +53,18 @@ body {
   cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="rgba(255,0,106,0.6)"/><circle cx="12" cy="12" r="4" fill="white"/></svg>') 12 12, auto;
 }
 
+/* Apply custom cursor to ALL interactive elements */
+button, a, input, textarea, select, label,
+.tab-btn, .theme-toggle, .music-toggle, .game-btn,
+.fact-item, .flag, .aim-target, .playlist-item,
+.message-board-btn, .message-reaction-btn, .message-reply-btn,
+.chat-send, .music-control-btn, .music-play-btn,
+.flag-game-close, .secret-game-close, .snake-btn,
+.mobile-menu-toggle, .theme-menu button,
+[role="button"], [onclick], [tabindex="0"] {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="rgba(255,0,106,0.6)"/><circle cx="12" cy="12" r="4" fill="white"/></svg>') 12 12, auto !important;
+}
+
 /* Screen reader only helper */
 .sr-only {
   position: absolute;
@@ -82,6 +94,7 @@ body {
   opacity: 0.9;
   z-index: -1;
   pointer-events: none;
+  transition: background 0.6s ease-in-out, opacity 0.6s ease-in-out, filter 0.6s ease-in-out;
 }
 
 /* ============================
@@ -97,10 +110,30 @@ body.light {
 body.light .card {
   background: rgba(255, 255, 255, 0.95);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  color: #222;
 }
 
 body.light .rgb-bg {
   opacity: 0.3;
+}
+
+body.light .logo {
+  background: linear-gradient(90deg, #ff006a, #00aaff, #00ff88);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+body.light .tab-btn {
+  color: #333;
+}
+
+body.light .tab-btn.active {
+  color: #fff;
+}
+
+body.light .theme-toggle {
+  color: #222;
 }
 
 /* Dark Theme */
@@ -259,6 +292,7 @@ body.pastel .card {
   background: rgba(255, 255, 255, 0.7);
   border: 2px solid rgba(255, 154, 158, 0.5);
   box-shadow: 0 8px 32px rgba(255, 154, 158, 0.3);
+  color: #5a4e6e;
 }
 
 body.pastel .rgb-bg {
@@ -268,9 +302,24 @@ body.pastel .rgb-bg {
   filter: blur(60px);
 }
 
+body.pastel .tab-btn {
+  color: #5a4e6e;
+}
+
 body.pastel .tab-btn.active {
   background: linear-gradient(90deg, #ff9a9e, #fad0c4);
   color: white;
+}
+
+body.pastel .logo {
+  background: linear-gradient(90deg, #ff9a9e, #fad0c4, #ff9a9e);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+body.pastel .theme-toggle {
+  color: #5a4e6e;
 }
 
 /* Fire Pride Theme */
@@ -336,7 +385,6 @@ body.fire .tab-btn.active {
   animation: slide-down 0.6s ease-out;
   position: sticky;
   top: 0;
-  flex-wrap: wrap;
   z-index: 10000;
 }
 
@@ -1544,31 +1592,36 @@ button:active, a:active, .tab-btn:active, .game-btn:active {
 }
 
 /* ============================
-   THEME TRANSITION
+   SMOOTH THEME TRANSITION (NO OVERLAY)
 ============================ */
 
-.theme-transition-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle, rgba(255,255,255,0) 0%, rgba(0,0,0,0) 100%);
-  z-index: 10001;
-  pointer-events: none;
-  opacity: 0;
-  transform: scale(0);
-  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+/* Just smooth color transitions - no black screen */
+body {
+  transition: background 0.6s ease, 
+              color 0.6s ease;
 }
 
-.theme-transition-overlay.active {
-  opacity: 1;
-  transform: scale(3);
-  background: radial-gradient(circle, 
-    rgba(255,0,106,0.8) 0%, 
-    rgba(0,240,255,0.6) 30%,
-    rgba(255,0,255,0.4) 60%,
-    rgba(0,0,0,0) 100%);
+.card {
+  transition: background 0.6s ease,
+              border-color 0.6s ease,
+              box-shadow 0.6s ease;
+}
+
+.rgb-bg {
+  transition: background 0.7s ease,
+              opacity 0.6s ease,
+              filter 0.6s ease,
+              animation 0.6s ease;
+}
+
+.navbar,
+.tab-btn,
+.theme-menu button,
+.game-box,
+.leaderboard,
+.message-board,
+.chat-box {
+  transition: all 0.5s ease;
 }
 
 /* ============================
@@ -1601,6 +1654,66 @@ button:active, a:active, .tab-btn:active, .game-btn:active {
   font-size: 0.95rem;
 }
 
+.message-board-username {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.username-input {
+  flex: 1;
+  padding: 10px 15px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-sm);
+  color: white;
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+.username-input:focus {
+  outline: none;
+  border-color: var(--color-secondary);
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+}
+
+.username-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.save-username-btn {
+  padding: 10px 20px;
+  background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.save-username-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(0, 240, 255, 0.4);
+}
+
+.current-username {
+  padding: 8px 15px;
+  background: rgba(0, 240, 255, 0.2);
+  border-radius: var(--radius-sm);
+  color: var(--color-secondary);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
 .message-board-post {
   margin-bottom: 25px;
 }
@@ -1628,6 +1741,67 @@ button:active, a:active, .tab-btn:active, .game-btn:active {
 
 .message-board-textarea::placeholder {
   color: rgba(255, 255, 255, 0.5);
+}
+
+.message-image-upload {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.message-image-btn {
+  padding: 8px 16px;
+  background: rgba(0, 240, 255, 0.2);
+  border: 2px solid var(--color-secondary);
+  border-radius: var(--radius-sm);
+  color: var(--color-secondary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.message-image-btn:hover {
+  background: rgba(0, 240, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 240, 255, 0.4);
+}
+
+.message-image-preview {
+  position: relative;
+  display: inline-block;
+}
+
+.message-image-preview img {
+  max-width: 150px;
+  max-height: 150px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--color-secondary);
+  object-fit: cover;
+}
+
+.message-remove-image {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.message-remove-image:hover {
+  transform: scale(1.1);
+  background: #ff3388;
 }
 
 .message-board-controls {
@@ -1744,6 +1918,72 @@ button:active, a:active, .tab-btn:active, .game-btn:active {
   color: white;
   line-height: 1.6;
   word-wrap: break-word;
+}
+
+.message-board-item-image {
+  margin-top: 10px;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  max-width: 400px;
+}
+
+.message-board-item-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius-sm);
+  transition: transform 0.3s ease;
+}
+
+.message-board-item-image:hover img {
+  transform: scale(1.02);
+}
+
+/* Image Lightbox */
+.image-lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.95);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100000;
+  cursor: pointer;
+}
+
+.image-lightbox.active {
+  display: flex;
+}
+
+.image-lightbox img {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: var(--radius-md);
+  box-shadow: 0 0 50px rgba(255, 255, 255, 0.2);
+}
+
+.image-lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.image-lightbox-close:hover {
+  background: var(--color-primary);
+  transform: scale(1.1);
 }
 
 .message-board-loading,
@@ -1926,11 +2166,23 @@ body.sparkle-mode * {
 ============================ */
 
 .tab {
-  display: none !important;
+  display: none;
 }
 
 .tab.active-tab {
-  display: block !important;
+  display: block;
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ============================
@@ -1938,10 +2190,9 @@ body.sparkle-mode * {
 ============================ */
 
 .reveal {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s ease-out, 
-              transform 0.6s ease-out;
+  /* Disabled to prevent tab switching flicker */
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .reveal.visible {
@@ -2819,470 +3070,29 @@ body.sparkle-mode * {
 }
 
 /* ============================
-   RESPONSIVE ADJUSTMENTS - ENHANCED
+   RESPONSIVE ADJUSTMENTS
 ============================ */
 
-/* ===== MOBILE MENU TOGGLE (HAMBURGER) ===== */
-.mobile-menu-toggle {
-  display: none;
-  background: none;
-  border: none;
-  flex-direction: column;
-  gap: 5px;
-  cursor: pointer;
-  padding: 8px;
-  z-index: 100;
-  order: 2; /* Place after logo */
-}
-
-.mobile-menu-toggle span {
-  width: 28px;
-  height: 3px;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
-  border-radius: 2px;
-  transition: all 0.3s ease;
-  display: block;
-}
-
-.mobile-menu-toggle.active span:nth-child(1) {
-  transform: rotate(45deg) translateY(10px);
-}
-
-.mobile-menu-toggle.active span:nth-child(2) {
-  opacity: 0;
-}
-
-.mobile-menu-toggle.active span:nth-child(3) {
-  transform: rotate(-45deg) translateY(-10px);
-}
-
-/* ===== TABLET (768px - 1023px) ===== */
-@media (max-width: 1023px) {
-  .app {
-    max-width: 100%;
-    padding: 0 20px 40px;
-    margin: 20px auto;
-  }
-  
-  .navbar {
-    padding: 14px 16px;
-  }
-  
-  .tabs {
-    gap: 6px;
-  }
-  
-  .tab-btn {
-    font-size: 12px;
-    padding: 6px 12px;
-  }
-  
-  /* Home layout adjustments */
-  .home-layout {
-    flex-direction: column;
-    gap: 24px;
-  }
-  
-  .gif-frame {
-    max-width: 400px;
-    margin: 0 auto;
-  }
-}
-
-/* ===== MOBILE (767px and below) ===== */
-@media (max-width: 767px) {
-  /* === APP CONTAINER === */
-  .app {
-    margin: 12px auto 20px;
-    padding: 0 12px 30px;
-  }
-  
-  /* === NAVBAR === */
-  .navbar {
-    padding: 12px;
-    border-radius: 14px;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    gap: 8px;
-    position: relative;
-  }
-  
-  .logo {
-    font-size: 18px;
-    letter-spacing: 1px;
-    order: 1;
-    flex: 1;
-  }
-  
-  /* Show hamburger menu */
-  .mobile-menu-toggle {
-    display: flex;
-  }
-  
-  /* Hide theme toggle on very small screens, make it last */
-  .theme-container {
-    order: 3;
-  }
-  
-  /* === TABS MOBILE MENU === */
-  .tabs {
-    display: none;
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 0;
-    right: 0;
-    background: rgba(10, 10, 15, 0.98);
-    flex-direction: column;
-    gap: 8px;
-    padding: 16px;
-    border-radius: 14px;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    z-index: 9999;
-    animation: slideDown 0.3s ease-out;
-  }
-  
-  @keyframes slideDown {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  .tabs.mobile-open {
-    display: flex;
-  }
-  
-  .tab-btn {
-    width: 100%;
-    text-align: left;
-    padding: 14px 18px;
-    font-size: 15px;
-    border-radius: var(--radius-sm);
-    white-space: normal;
-  }
-  
-  /* === THEME MENU === */
-  .theme-toggle {
-    font-size: 11px;
-    padding: 8px 12px;
-    white-space: nowrap;
-  }
-  
-  .theme-menu {
-    right: 0;
-    left: auto;
-    min-width: 180px;
-  }
-  
-  /* === CONTENT SECTIONS === */
-  .card {
-    padding: 20px 16px;
-    border-radius: 12px;
-    margin-bottom: 16px;
-  }
-  
-  .section-title,
-  .title-glow {
-    font-size: 24px;
-    line-height: 1.3;
-  }
-  
-  .subtitle {
-    font-size: 14px;
-  }
-  
-  /* === HOME SECTION === */
-  .home-layout {
-    flex-direction: column;
-    gap: 20px;
-  }
-  
-  .home-text {
-    order: 2;
-  }
-  
-  .home-media {
-    order: 1;
-  }
-  
-  .home-text p {
-    font-size: 15px;
-    margin-bottom: 14px;
-  }
-  
-  /* === IMAGES & MEDIA === */
-  .gif,
-  .gif-frame img {
-    max-width: 100%;
-    width: 100%;
-    height: auto;
-  }
-  
-  .gif-frame {
-    max-width: 350px;
-    margin: 0 auto;
-  }
-  
-  /* === FACTS CARDS === */
-  .facts-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-  
-  .fact-card {
-    padding: 16px;
-  }
-  
-  /* === GAMES SECTION === */
-  .games-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-  
-  .game-card {
-    padding: 16px;
-  }
-  
-  /* === GAME OVERLAYS === */
-  .flag-game-overlay,
-  .secret-game-overlay {
-    padding: 12px;
-  }
-  
-  .flag-game-window,
-  .secret-game-window {
-    width: 95vw;
-    max-width: 95vw;
-    max-height: 85vh;
-    padding: 16px;
-    border-radius: 12px;
-  }
-  
-  .flag-game-header,
-  .secret-game-header {
-    font-size: 16px;
-    margin-bottom: 12px;
-  }
-  
-  .flag-game-area {
-    height: 50vh;
-    min-height: 300px;
-  }
-  
-  #snake-canvas {
-    width: 100% !important;
-    max-width: 350px;
-    height: auto !important;
-    aspect-ratio: 1;
-  }
-  
-  .secret-game-instructions {
-    font-size: 12px;
-    padding: 8px;
-  }
-  
-  /* === MUSIC PLAYER === */
+@media (max-width: 800px) {
   .music-player {
-    width: 95vw;
-    max-width: 95vw;
-    right: 50%;
-    transform: translateX(50%);
-    max-height: 80vh;
-    overflow-y: auto;
-  }
-  
-  .music-player-toggle {
-    font-size: 20px;
-    padding: 8px 12px;
-  }
-  
-  /* === MESSAGE BOARD === */
-  .message-board-container {
-    padding: 16px;
+    width: 90vw;
+    right: 5vw;
   }
   
   .message-board-filters {
     flex-direction: column;
-    gap: 12px;
   }
   
   .message-search-container {
     min-width: 100%;
   }
   
-  .message-item {
-    padding: 12px;
+  .secret-game-window {
+    padding: 20px;
   }
   
   .message-replies-container {
-    margin-left: 12px;
-    padding-left: 8px;
-  }
-  
-  .reply-form {
-    margin-left: 12px;
-  }
-  
-  /* === LEADERBOARD === */
-  .leaderboard-table {
-    font-size: 13px;
-  }
-  
-  .leaderboard-table th,
-  .leaderboard-table td {
-    padding: 8px 6px;
-  }
-  
-  /* === CONTACT FORM === */
-  .contact-links {
-    flex-direction: column;
-    gap: 12px;
-  }
-  
-  .contact-link {
-    width: 100%;
-    justify-content: center;
-  }
-  
-  /* === AI CHAT === */
-  .chat-container {
-    height: 60vh;
-    min-height: 400px;
-  }
-  
-  .chat-message {
-    max-width: 85%;
-    font-size: 14px;
-    padding: 10px 12px;
-  }
-  
-  .chat-input {
-    font-size: 15px;
-  }
-  
-  /* === AIM TRAINER === */
-  .aim-game-area {
-    height: 50vh;
-    min-height: 300px;
-  }
-  
-  .aim-target {
-    width: 50px !important;
-    height: 50px !important;
-  }
-  
-  /* === TOUCH IMPROVEMENTS === */
-  button,
-  .tab-btn,
-  .theme-toggle,
-  .contact-link,
-  .game-card button {
-    min-height: 44px; /* Apple's recommended touch target size */
-    min-width: 44px;
-  }
-  
-  /* Increase tap area for close buttons */
-  .flag-game-close,
-  .secret-game-close,
-  .music-player-close {
-    min-width: 44px;
-    min-height: 44px;
-    padding: 8px;
-  }
-}
-
-/* ===== VERY SMALL MOBILE (480px and below) ===== */
-@media (max-width: 480px) {
-  .app {
-    padding: 0 8px 20px;
-    margin: 8px auto 16px;
-  }
-  
-  .navbar {
-    padding: 10px;
-  }
-  
-  .logo {
-    font-size: 16px;
-  }
-  
-  .mobile-menu-toggle span {
-    width: 24px;
-  }
-  
-  .theme-toggle {
-    font-size: 10px;
-    padding: 6px 10px;
-  }
-  
-  .section-title,
-  .title-glow {
-    font-size: 20px;
-  }
-  
-  .card {
-    padding: 16px 12px;
-  }
-  
-  .home-text p {
-    font-size: 14px;
-  }
-  
-  .gif-frame {
-    max-width: 280px;
-  }
-  
-  /* Make music player full screen on tiny devices */
-  .music-player {
-    width: 100vw;
-    height: 100vh;
-    max-height: 100vh;
-    border-radius: 0;
-    top: 0;
-    left: 0;
-    right: 0;
-    transform: none;
-  }
-  
-  /* Smaller game canvas */
-  #snake-canvas {
-    max-width: 280px;
-  }
-  
-  .flag-game-window,
-  .secret-game-window {
-    padding: 12px;
-  }
-}
-
-/* ===== LANDSCAPE MODE ON MOBILE ===== */
-@media (max-width: 767px) and (orientation: landscape) {
-  .flag-game-area {
-    height: 70vh;
-  }
-  
-  .chat-container {
-    height: 70vh;
-  }
-  
-  .music-player {
-    max-height: 90vh;
-  }
-  
-  #snake-canvas {
-    max-width: 40vh;
-  }
-}
-
-/* ===== PRESERVE ORIGINAL TABLET STYLES ===== */
-@media (max-width: 800px) {
-  .secret-game-window {
-    padding: 20px;
+    margin-left: 15px;
+    padding-left: 10px;
   }
 }
