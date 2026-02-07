@@ -22,6 +22,15 @@
     <nav class="navbar" role="navigation" aria-label="Главна навигация">
       <h2 class="logo" id="logo-game-trigger" title="Click me! 🎮">VIKTOR</h2>
       
+      <!-- Mobile Menu Toggle Button -->
+      <button class="mobile-menu-toggle" id="mobile-menu-toggle" 
+              aria-label="Toggle navigation menu" 
+              aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      
       <div class="tabs" role="tablist">
         <button class="tab-btn active" 
                 data-tab="home"
@@ -587,6 +596,80 @@
 
   <!-- YouTube iframe API for music player -->
   <script src="https://www.youtube.com/iframe_api"></script>
+
+  <!-- MOBILE MENU FUNCTIONALITY -->
+  <script>
+    // Mobile Menu Toggle
+    document.addEventListener('DOMContentLoaded', function() {
+      const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+      const tabs = document.querySelector('.tabs');
+      const tabButtons = document.querySelectorAll('.tab-btn');
+      
+      // Toggle mobile menu when hamburger is clicked
+      if (mobileMenuToggle) {
+        mobileMenuToggle.addEventListener('click', function() {
+          const isOpen = tabs.classList.contains('mobile-open');
+          
+          if (isOpen) {
+            closeMobileMenu();
+          } else {
+            openMobileMenu();
+          }
+        });
+      }
+      
+      // Close menu when any tab is clicked (only on mobile)
+      tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          if (window.innerWidth <= 767) {
+            closeMobileMenu();
+          }
+        });
+      });
+      
+      // Close menu when clicking outside (only on mobile)
+      document.addEventListener('click', function(event) {
+        if (window.innerWidth <= 767) {
+          const isClickInsideNav = event.target.closest('.navbar');
+          const menuIsOpen = tabs.classList.contains('mobile-open');
+          
+          if (!isClickInsideNav && menuIsOpen) {
+            closeMobileMenu();
+          }
+        }
+      });
+      
+      // Handle window resize - reset menu state
+      let resizeTimer;
+      window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function() {
+          if (window.innerWidth > 767) {
+            tabs.classList.remove('mobile-open');
+            if (mobileMenuToggle) {
+              mobileMenuToggle.classList.remove('active');
+            }
+          }
+        }, 250);
+      });
+      
+      function openMobileMenu() {
+        tabs.classList.add('mobile-open');
+        if (mobileMenuToggle) {
+          mobileMenuToggle.classList.add('active');
+          mobileMenuToggle.setAttribute('aria-expanded', 'true');
+        }
+      }
+      
+      function closeMobileMenu() {
+        tabs.classList.remove('mobile-open');
+        if (mobileMenuToggle) {
+          mobileMenuToggle.classList.remove('active');
+          mobileMenuToggle.setAttribute('aria-expanded', 'false');
+        }
+      }
+    });
+  </script>
 
   <!-- MAIN SCRIPT -->
   <script src="script.js"></script>
