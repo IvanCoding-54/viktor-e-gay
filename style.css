@@ -2819,29 +2819,470 @@ body.sparkle-mode * {
 }
 
 /* ============================
-   RESPONSIVE ADJUSTMENTS
+   RESPONSIVE ADJUSTMENTS - ENHANCED
 ============================ */
 
-@media (max-width: 800px) {
+/* ===== MOBILE MENU TOGGLE (HAMBURGER) ===== */
+.mobile-menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 8px;
+  z-index: 100;
+  order: 2; /* Place after logo */
+}
+
+.mobile-menu-toggle span {
+  width: 28px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  display: block;
+}
+
+.mobile-menu-toggle.active span:nth-child(1) {
+  transform: rotate(45deg) translateY(10px);
+}
+
+.mobile-menu-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.mobile-menu-toggle.active span:nth-child(3) {
+  transform: rotate(-45deg) translateY(-10px);
+}
+
+/* ===== TABLET (768px - 1023px) ===== */
+@media (max-width: 1023px) {
+  .app {
+    max-width: 100%;
+    padding: 0 20px 40px;
+    margin: 20px auto;
+  }
+  
+  .navbar {
+    padding: 14px 16px;
+  }
+  
+  .tabs {
+    gap: 6px;
+  }
+  
+  .tab-btn {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+  
+  /* Home layout adjustments */
+  .home-layout {
+    flex-direction: column;
+    gap: 24px;
+  }
+  
+  .gif-frame {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+}
+
+/* ===== MOBILE (767px and below) ===== */
+@media (max-width: 767px) {
+  /* === APP CONTAINER === */
+  .app {
+    margin: 12px auto 20px;
+    padding: 0 12px 30px;
+  }
+  
+  /* === NAVBAR === */
+  .navbar {
+    padding: 12px;
+    border-radius: 14px;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 8px;
+    position: relative;
+  }
+  
+  .logo {
+    font-size: 18px;
+    letter-spacing: 1px;
+    order: 1;
+    flex: 1;
+  }
+  
+  /* Show hamburger menu */
+  .mobile-menu-toggle {
+    display: flex;
+  }
+  
+  /* Hide theme toggle on very small screens, make it last */
+  .theme-container {
+    order: 3;
+  }
+  
+  /* === TABS MOBILE MENU === */
+  .tabs {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: rgba(10, 10, 15, 0.98);
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+    border-radius: 14px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 9999;
+    animation: slideDown 0.3s ease-out;
+  }
+  
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .tabs.mobile-open {
+    display: flex;
+  }
+  
+  .tab-btn {
+    width: 100%;
+    text-align: left;
+    padding: 14px 18px;
+    font-size: 15px;
+    border-radius: var(--radius-sm);
+    white-space: normal;
+  }
+  
+  /* === THEME MENU === */
+  .theme-toggle {
+    font-size: 11px;
+    padding: 8px 12px;
+    white-space: nowrap;
+  }
+  
+  .theme-menu {
+    right: 0;
+    left: auto;
+    min-width: 180px;
+  }
+  
+  /* === CONTENT SECTIONS === */
+  .card {
+    padding: 20px 16px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+  }
+  
+  .section-title,
+  .title-glow {
+    font-size: 24px;
+    line-height: 1.3;
+  }
+  
+  .subtitle {
+    font-size: 14px;
+  }
+  
+  /* === HOME SECTION === */
+  .home-layout {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .home-text {
+    order: 2;
+  }
+  
+  .home-media {
+    order: 1;
+  }
+  
+  .home-text p {
+    font-size: 15px;
+    margin-bottom: 14px;
+  }
+  
+  /* === IMAGES & MEDIA === */
+  .gif,
+  .gif-frame img {
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+  }
+  
+  .gif-frame {
+    max-width: 350px;
+    margin: 0 auto;
+  }
+  
+  /* === FACTS CARDS === */
+  .facts-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .fact-card {
+    padding: 16px;
+  }
+  
+  /* === GAMES SECTION === */
+  .games-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .game-card {
+    padding: 16px;
+  }
+  
+  /* === GAME OVERLAYS === */
+  .flag-game-overlay,
+  .secret-game-overlay {
+    padding: 12px;
+  }
+  
+  .flag-game-window,
+  .secret-game-window {
+    width: 95vw;
+    max-width: 95vw;
+    max-height: 85vh;
+    padding: 16px;
+    border-radius: 12px;
+  }
+  
+  .flag-game-header,
+  .secret-game-header {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+  
+  .flag-game-area {
+    height: 50vh;
+    min-height: 300px;
+  }
+  
+  #snake-canvas {
+    width: 100% !important;
+    max-width: 350px;
+    height: auto !important;
+    aspect-ratio: 1;
+  }
+  
+  .secret-game-instructions {
+    font-size: 12px;
+    padding: 8px;
+  }
+  
+  /* === MUSIC PLAYER === */
   .music-player {
-    width: 90vw;
-    right: 5vw;
+    width: 95vw;
+    max-width: 95vw;
+    right: 50%;
+    transform: translateX(50%);
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  
+  .music-player-toggle {
+    font-size: 20px;
+    padding: 8px 12px;
+  }
+  
+  /* === MESSAGE BOARD === */
+  .message-board-container {
+    padding: 16px;
   }
   
   .message-board-filters {
     flex-direction: column;
+    gap: 12px;
   }
   
   .message-search-container {
     min-width: 100%;
   }
   
-  .secret-game-window {
-    padding: 20px;
+  .message-item {
+    padding: 12px;
   }
   
   .message-replies-container {
-    margin-left: 15px;
-    padding-left: 10px;
+    margin-left: 12px;
+    padding-left: 8px;
+  }
+  
+  .reply-form {
+    margin-left: 12px;
+  }
+  
+  /* === LEADERBOARD === */
+  .leaderboard-table {
+    font-size: 13px;
+  }
+  
+  .leaderboard-table th,
+  .leaderboard-table td {
+    padding: 8px 6px;
+  }
+  
+  /* === CONTACT FORM === */
+  .contact-links {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .contact-link {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  /* === AI CHAT === */
+  .chat-container {
+    height: 60vh;
+    min-height: 400px;
+  }
+  
+  .chat-message {
+    max-width: 85%;
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+  
+  .chat-input {
+    font-size: 15px;
+  }
+  
+  /* === AIM TRAINER === */
+  .aim-game-area {
+    height: 50vh;
+    min-height: 300px;
+  }
+  
+  .aim-target {
+    width: 50px !important;
+    height: 50px !important;
+  }
+  
+  /* === TOUCH IMPROVEMENTS === */
+  button,
+  .tab-btn,
+  .theme-toggle,
+  .contact-link,
+  .game-card button {
+    min-height: 44px; /* Apple's recommended touch target size */
+    min-width: 44px;
+  }
+  
+  /* Increase tap area for close buttons */
+  .flag-game-close,
+  .secret-game-close,
+  .music-player-close {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 8px;
+  }
+}
+
+/* ===== VERY SMALL MOBILE (480px and below) ===== */
+@media (max-width: 480px) {
+  .app {
+    padding: 0 8px 20px;
+    margin: 8px auto 16px;
+  }
+  
+  .navbar {
+    padding: 10px;
+  }
+  
+  .logo {
+    font-size: 16px;
+  }
+  
+  .mobile-menu-toggle span {
+    width: 24px;
+  }
+  
+  .theme-toggle {
+    font-size: 10px;
+    padding: 6px 10px;
+  }
+  
+  .section-title,
+  .title-glow {
+    font-size: 20px;
+  }
+  
+  .card {
+    padding: 16px 12px;
+  }
+  
+  .home-text p {
+    font-size: 14px;
+  }
+  
+  .gif-frame {
+    max-width: 280px;
+  }
+  
+  /* Make music player full screen on tiny devices */
+  .music-player {
+    width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    transform: none;
+  }
+  
+  /* Smaller game canvas */
+  #snake-canvas {
+    max-width: 280px;
+  }
+  
+  .flag-game-window,
+  .secret-game-window {
+    padding: 12px;
+  }
+}
+
+/* ===== LANDSCAPE MODE ON MOBILE ===== */
+@media (max-width: 767px) and (orientation: landscape) {
+  .flag-game-area {
+    height: 70vh;
+  }
+  
+  .chat-container {
+    height: 70vh;
+  }
+  
+  .music-player {
+    max-height: 90vh;
+  }
+  
+  #snake-canvas {
+    max-width: 40vh;
+  }
+}
+
+/* ===== PRESERVE ORIGINAL TABLET STYLES ===== */
+@media (max-width: 800px) {
+  .secret-game-window {
+    padding: 20px;
   }
 }
