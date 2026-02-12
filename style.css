@@ -3154,66 +3154,125 @@ body.sparkle-mode * {
 }
 
 /* ============================
-   OPTION 5: WAVE RAINBOW
+   ENHANCED RAINBOW VIKTOR LOGO
+   Multiple Amazing Animations!
 ============================ */
 
+/* OPTION 1: FLOWING RAINBOW WITH GLOW (Recommended) */
 .logo {
   font-size: 20px;
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
-  display: inline-block;
-  position: relative;
-}
-
-.logo::before,
-.logo::after {
-  content: attr(data-text);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.logo {
   background: linear-gradient(
     90deg,
     #ff0000 0%,
-    #ff8c00 12.5%,
-    #ffff00 25%,
-    #00ff00 37.5%,
-    #00ffff 50%,
-    #0000ff 62.5%,
-    #8b00ff 75%,
-    #ff00ff 87.5%,
-    #ff0000 100%
+    #ff8c00 10%,
+    #ffff00 20%,
+    #00ff00 30%,
+    #00ffff 40%,
+    #0000ff 50%,
+    #8b00ff 60%,
+    #ff00ff 70%,
+    #ff0000 80%,
+    #ff8c00 90%,
+    #ffff00 100%
   );
-  background-size: 200% 100%;
+  background-size: 300% 100%;
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: 
-    wave-rainbow 3s linear infinite,
-    wave-motion 2s ease-in-out infinite;
+    logo-rainbow-flow 4s linear infinite,
+    logo-glow 2s ease-in-out infinite,
+    logo-float 3s ease-in-out infinite;
+  display: inline-block;
+  filter: drop-shadow(0 0 10px rgba(255, 0, 255, 0.5));
+  position: relative;
 }
 
-@keyframes wave-rainbow {
-  0% { background-position: 0% 50%; }
-  100% { background-position: 200% 50%; }
+/* Rainbow flow animation */
+@keyframes logo-rainbow-flow {
+  0% { 
+    background-position: 0% 50%; 
+  }
+  100% { 
+    background-position: 300% 50%; 
+  }
 }
 
-@keyframes wave-motion {
-  0%, 100% {
-    transform: skewX(0deg) translateY(0);
+/* Glow pulse animation */
+@keyframes logo-glow {
+  0%, 100% { 
+    filter: 
+      drop-shadow(0 0 10px rgba(255, 0, 255, 0.5))
+      drop-shadow(0 0 20px rgba(0, 255, 255, 0.3));
   }
-  25% {
-    transform: skewX(5deg) translateY(-2px);
+  50% { 
+    filter: 
+      drop-shadow(0 0 20px rgba(255, 0, 255, 0.8))
+      drop-shadow(0 0 40px rgba(0, 255, 255, 0.6))
+      drop-shadow(0 0 60px rgba(255, 255, 0, 0.4));
   }
-  50% {
-    transform: skewX(0deg) translateY(0);
+}
+
+/* Floating animation */
+@keyframes logo-float {
+  0%, 100% { 
+    transform: translateY(0px) scale(1);
   }
-  75% {
-    transform: skewX(-5deg) translateY(2px);
+  50% { 
+    transform: translateY(-5px) scale(1.05);
   }
+}
+
+/* Enhanced hover effect */
+.logo:hover {
+  animation: 
+    logo-rainbow-flow 2s linear infinite,
+    logo-glow-intense 1s ease-in-out infinite,
+    logo-wiggle 0.5s ease-in-out infinite;
+}
+
+@keyframes logo-glow-intense {
+  0%, 100% { 
+    filter: 
+      drop-shadow(0 0 20px rgba(255, 0, 255, 0.9))
+      drop-shadow(0 0 40px rgba(0, 255, 255, 0.7))
+      drop-shadow(0 0 60px rgba(255, 255, 0, 0.5));
+  }
+  50% { 
+    filter: 
+      drop-shadow(0 0 30px rgba(255, 0, 255, 1))
+      drop-shadow(0 0 60px rgba(0, 255, 255, 0.9))
+      drop-shadow(0 0 90px rgba(255, 255, 0, 0.7));
+  }
+}
+
+@keyframes logo-wiggle {
+  0%, 100% { transform: rotate(0deg) scale(1.05); }
+  25% { transform: rotate(-3deg) scale(1.08); }
+  75% { transform: rotate(3deg) scale(1.08); }
+}
+
+/* Light theme - darker rainbow */
+body.light .logo {
+  background: linear-gradient(
+    90deg,
+    #cc0000 0%,
+    #cc6600 10%,
+    #999900 20%,
+    #00cc00 30%,
+    #00cccc 40%,
+    #0000cc 50%,
+    #6600cc 60%,
+    #cc00cc 70%,
+    #cc0000 80%,
+    #cc6600 90%,
+    #999900 100%
+  );
+  background-size: 300% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
