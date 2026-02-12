@@ -311,7 +311,7 @@ body.pastel .tab-btn.active {
   color: white;
 }
 
-body.pastel .logo {
+body.pastel . {
   background: linear-gradient(90deg, #ff9a9e, #fad0c4, #ff9a9e);
   background-clip: text;
   -webkit-background-clip: text;
@@ -388,7 +388,7 @@ body.fire .tab-btn.active {
   z-index: 10000;
 }
 
-.logo {
+. {
   font-size: 20px;
   font-weight: 700;
   letter-spacing: 2px;
@@ -397,10 +397,10 @@ body.fire .tab-btn.active {
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: logo-pulse 3s ease-in-out infinite;
+  animation: -pulse 3s ease-in-out infinite;
 }
 
-@keyframes logo-pulse {
+@keyframes -pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.8; }
 }
@@ -2974,20 +2974,20 @@ body.sparkle-mode * {
   transform: translateY(0);
 }
 
-/* Logo hint for secret game */
-#logo-game-trigger {
+/*  hint for secret game */
+#-game-trigger {
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
 }
 
-#logo-game-trigger:hover {
+#-game-trigger:hover {
   color: #ff006a;
   text-shadow: 0 0 20px #ff006a;
   transform: scale(1.05);
 }
 
-#logo-game-trigger::after {
+#-game-trigger::after {
   content: '🎮';
   position: absolute;
   right: -25px;
@@ -2998,7 +2998,7 @@ body.sparkle-mode * {
   transition: opacity 0.3s ease;
 }
 
-#logo-game-trigger:hover::after {
+#-game-trigger:hover::after {
   opacity: 1;
 }
 
@@ -3096,26 +3096,36 @@ body.sparkle-mode * {
     padding-left: 10px;
   }
 }
-/* Enhanced V letter styling for secret game trigger */
-/* Enhanced V letter styling for secret game trigger */
+/* FIX FOR V LOGO ALIGNMENT */
+
+/* Replace the #logo-game-trigger styling at the end of your CSS with this: */
+
 #logo-game-trigger {
   position: relative;
   transition: all 0.3s ease;
-  display: inline-block;
+  display: inline; /* Changed from inline-block to inline */
   cursor: pointer;
   /* Inherit the gradient from parent */
   background: inherit;
   background-clip: text;
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  /* Remove this line: -webkit-text-fill-color: transparent; */
 }
 
 #logo-game-trigger:hover {
   text-shadow: 0 0 20px #ff006a, 0 0 40px #ff00ff;
   transform: scale(1.15);
-  /* Override gradient on hover with solid color */
-  -webkit-text-fill-color: #ff006a;
-  filter: drop-shadow(0 0 10px #ff006a);
+  /* Add animation */
+  animation: game-hint-pulse 0.6s ease-in-out;
+}
+
+@keyframes game-hint-pulse {
+  0%, 100% {
+    transform: scale(1.15);
+  }
+  50% {
+    transform: scale(1.25);
+  }
 }
 
 #logo-game-trigger::after {
@@ -3146,4 +3156,5 @@ body.sparkle-mode * {
 /* Make the rest of IKTOR non-clickable visually */
 .logo {
   user-select: none;
+  display: inline; /* Make sure logo itself is inline */
 }
