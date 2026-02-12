@@ -3158,3 +3158,54 @@ body.sparkle-mode * {
   user-select: none;
   display: inline; /* Make sure logo itself is inline */
 }
+.logo {
+  user-select: none
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: linear-gradient(
+    90deg,
+    #ff0000 0%,      /* Red */
+    #ff8c00 16.66%,  /* Orange */
+    #ffff00 33.33%,  /* Yellow */
+    #00ff00 50%,     /* Green */
+    #0000ff 66.66%,  /* Blue */
+    #8b00ff 83.33%,  /* Purple */
+    #ff0000 100%     /* Back to Red */
+  );
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: logo-rainbow 3s linear infinite, logo-pulse 3s ease-in-out infinite;
+  display: inline;
+}
+
+@keyframes logo-rainbow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+@keyframes logo-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.05); }
+}
+
+/* Light theme override */
+body.light .logo {
+  background: linear-gradient(
+    90deg,
+    #cc0000 0%,
+    #cc6600 16.66%,
+    #cccc00 33.33%,
+    #00cc00 50%,
+    #0000cc 66.66%,
+    #6600cc 83.33%,
+    #cc0000 100%
+  );
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
