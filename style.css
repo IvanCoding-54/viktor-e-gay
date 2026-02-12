@@ -3097,16 +3097,25 @@ body.sparkle-mode * {
   }
 }
 /* Enhanced V letter styling for secret game trigger */
+/* Enhanced V letter styling for secret game trigger */
 #logo-game-trigger {
   position: relative;
   transition: all 0.3s ease;
   display: inline-block;
+  cursor: pointer;
+  /* Inherit the gradient from parent */
+  background: inherit;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 #logo-game-trigger:hover {
-  color: #ff006a;
   text-shadow: 0 0 20px #ff006a, 0 0 40px #ff00ff;
   transform: scale(1.15);
+  /* Override gradient on hover with solid color */
+  -webkit-text-fill-color: #ff006a;
+  filter: drop-shadow(0 0 10px #ff006a);
 }
 
 #logo-game-trigger::after {
