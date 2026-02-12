@@ -3153,59 +3153,67 @@ body.sparkle-mode * {
   }
 }
 
-/* Make the rest of IKTOR non-clickable visually */
+/* ============================
+   OPTION 5: WAVE RAINBOW
+============================ */
+
 .logo {
-  user-select: none;
-  display: inline; /* Make sure logo itself is inline */
-}
-.logo {
-  user-select: none
   font-size: 20px;
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
+  display: inline-block;
+  position: relative;
+}
+
+.logo::before,
+.logo::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.logo {
   background: linear-gradient(
     90deg,
-    #ff0000 0%,      /* Red */
-    #ff8c00 16.66%,  /* Orange */
-    #ffff00 33.33%,  /* Yellow */
-    #00ff00 50%,     /* Green */
-    #0000ff 66.66%,  /* Blue */
-    #8b00ff 83.33%,  /* Purple */
-    #ff0000 100%     /* Back to Red */
+    #ff0000 0%,
+    #ff8c00 12.5%,
+    #ffff00 25%,
+    #00ff00 37.5%,
+    #00ffff 50%,
+    #0000ff 62.5%,
+    #8b00ff 75%,
+    #ff00ff 87.5%,
+    #ff0000 100%
   );
   background-size: 200% 100%;
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: logo-rainbow 3s linear infinite, logo-pulse 3s ease-in-out infinite;
-  display: inline;
+  animation: 
+    wave-rainbow 3s linear infinite,
+    wave-motion 2s ease-in-out infinite;
 }
 
-@keyframes logo-rainbow {
+@keyframes wave-rainbow {
   0% { background-position: 0% 50%; }
   100% { background-position: 200% 50%; }
 }
 
-@keyframes logo-pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.9; transform: scale(1.05); }
-}
-
-/* Light theme override */
-body.light .logo {
-  background: linear-gradient(
-    90deg,
-    #cc0000 0%,
-    #cc6600 16.66%,
-    #cccc00 33.33%,
-    #00cc00 50%,
-    #0000cc 66.66%,
-    #6600cc 83.33%,
-    #cc0000 100%
-  );
-  background-size: 200% 100%;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+@keyframes wave-motion {
+  0%, 100% {
+    transform: skewX(0deg) translateY(0);
+  }
+  25% {
+    transform: skewX(5deg) translateY(-2px);
+  }
+  50% {
+    transform: skewX(0deg) translateY(0);
+  }
+  75% {
+    transform: skewX(-5deg) translateY(2px);
+  }
 }
