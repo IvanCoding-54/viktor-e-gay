@@ -1,28 +1,7 @@
 /* ============================
    VIKTOR.RGB - Main JavaScript
    Enhanced & Optimized Version
-   WITH BUG FIXES & ERROR HANDLING
 ============================ */
-
-// ========================================
-// CONFIGURATION - CENTRALIZED SETTINGS
-// ========================================
-
-const CONFIG = {
-  MOBILE_BREAKPOINT: 768,
-  AIM_GAME_DURATION: 20,
-  AIM_TARGET_LIFETIME: 900,
-  AIM_TARGET_SPAWN_RATE: 450,
-  FLAG_GAME_DURATION: 120,
-  FLAG_SPAWN_RATE: 600,
-  COMBO_TIMEOUT: 2000,
-  SNAKE_INITIAL_SPEED: 100,
-  SNAKE_SPEED_INCREASE: 5,
-  SNAKE_MIN_SPEED: 40,
-  LEADERBOARD_LIMIT: 10,
-  RETRY_ATTEMPTS: 2,
-  RETRY_DELAY: 2000,
-};
 
 // ========================================
 // UTILITY FUNCTIONS
@@ -84,16 +63,16 @@ function showNotification(message, type = 'info') {
 // LEADERBOARD (FIREBASE)
 // ========================================
 
-async function renderLeaderboard(retries = CONFIG.RETRY_ATTEMPTS) {
+async function renderLeaderboard() {
   const list = document.getElementById("leaderboard-list");
   if (!list || typeof loadLeaderboard !== "function") return;
 
-  list.innerHTML = "<li>⏳ Зареждане...</li>";
+  list.innerHTML = "<li>Зареждане...</li>";
 
   try {
     const entries = await loadLeaderboard();
 
-    if (!entries || entries.length === 0) {
+    if (entries.length === 0) {
       list.innerHTML = "<li>Няма записани резултати още.</li>";
       return;
     }
@@ -102,10 +81,7 @@ async function renderLeaderboard(retries = CONFIG.RETRY_ATTEMPTS) {
     entries.forEach((entry, i) => {
       const li = document.createElement("li");
       li.setAttribute("data-rank", i + 1);
-      li.style.animation = `slideIn 0.3s ease ${i * 0.05}s both`;
-      
-      const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `#${i + 1}`;
-      li.textContent = `${medal} ${entry.name} – ${entry.score} точки`;
+      li.textContent = `${entry.name} – ${entry.score} точки`;
 
       if (i === 0) li.classList.add("rank-1");
       else if (i === 1) li.classList.add("rank-2");
@@ -114,26 +90,21 @@ async function renderLeaderboard(retries = CONFIG.RETRY_ATTEMPTS) {
       list.appendChild(li);
     });
   } catch (e) {
-    console.error("❌ Leaderboard error:", e);
-    list.innerHTML = "<li>⚠️ Грешка при зареждане на класацията</li>";
-
-    // Retry after delay
-    if (retries > 0) {
-      setTimeout(() => renderLeaderboard(retries - 1), CONFIG.RETRY_DELAY);
-    }
+    console.error("Грешка при зареждане на класацията:", e);
+    list.innerHTML = "<li>Грешка при зареждане</li>";
   }
 }
 
-async function renderAimLeaderboard(retries = CONFIG.RETRY_ATTEMPTS) {
+async function renderAimLeaderboard() {
   const list = document.getElementById("aim-leaderboard-list");
   if (!list) return;
 
-  list.innerHTML = "<li>⏳ Зареждане...</li>";
+  list.innerHTML = "<li>Зареждане...</li>";
 
   try {
     const entries = await loadAimLeaderboard();
 
-    if (!entries || entries.length === 0) {
+    if (entries.length === 0) {
       list.innerHTML = "<li>Няма записани резултати още.</li>";
       return;
     }
@@ -142,10 +113,7 @@ async function renderAimLeaderboard(retries = CONFIG.RETRY_ATTEMPTS) {
     entries.forEach((e, i) => {
       const li = document.createElement("li");
       li.setAttribute("data-rank", i + 1);
-      li.style.animation = `slideIn 0.3s ease ${i * 0.05}s both`;
-      
-      const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `#${i + 1}`;
-      li.textContent = `${medal} ${e.name} – ${e.score} точки`;
+      li.textContent = `${e.name} – ${e.score} точки`;
       
       if (i === 0) li.classList.add("rank-1");
       else if (i === 1) li.classList.add("rank-2");
@@ -154,12 +122,8 @@ async function renderAimLeaderboard(retries = CONFIG.RETRY_ATTEMPTS) {
       list.appendChild(li);
     });
   } catch (e) {
-    console.error("❌ Aim Leaderboard error:", e);
-    list.innerHTML = "<li>⚠️ Грешка при зареждане</li>";
-
-    if (retries > 0) {
-      setTimeout(() => renderAimLeaderboard(retries - 1), CONFIG.RETRY_DELAY);
-    }
+    console.error("Грешка при зареждане на aim класацията:", e);
+    list.innerHTML = "<li>Грешка при зареждане</li>";
   }
 }
 
@@ -1335,19 +1299,29 @@ function initMusicPlayer() {
   // Auto-play on page load (with user interaction check)
   const tryAutoPlay = () => {
     if (musicPlayer.playlist.length > 0 && !musicPlayer.isPlaying) {
-      loadAndPlayTrack().catch(() => {
+      try {
+        loadAndPlayTrack();
+      } catch (e) {
         console.log('Auto-play blocked. User interaction required.');
+        const showMessageToast = window.showMessageToast || ((msg) => console.log(msg));
         showMessageToast('🎵 Натисни ▶️ за да пуснеш музиката!', 'info');
-      });
+      }
     }
   };
   
   // Try to autoplay after a small delay
-  setTimeout(tryAutoPlay, 1000);
+  // Disabled auto-play to prevent errors
+  // setTimeout(tryAutoPlay, 1000);
   
   // Also try on first user interaction
   const enableAutoPlay = () => {
-    tryAutoPlay();
+    try {
+      if (musicPlayer && musicPlayer.playlist && musicPlayer.playlist.length > 0) {
+        tryAutoPlay();
+      }
+    } catch (e) {
+      console.log('Auto-play on interaction failed:', e);
+    }
     document.removeEventListener('click', enableAutoPlay);
     document.removeEventListener('keydown', enableAutoPlay);
   };
@@ -1528,9 +1502,21 @@ function togglePlayPause() {
       if (!musicPlayer.audio.src) {
         loadAndPlayTrack();
       } else {
-        musicPlayer.audio.play();
-        musicPlayer.isPlaying = true;
-        document.getElementById('music-play').textContent = '⏸️';
+        try {
+          const playPromise = musicPlayer.audio.play();
+          if (playPromise !== undefined) {
+            playPromise
+              .then(() => {
+                musicPlayer.isPlaying = true;
+                document.getElementById('music-play').textContent = '⏸️';
+              })
+              .catch(error => {
+                console.log('Audio play failed (non-critical):', error);
+              });
+          }
+        } catch (e) {
+          console.log('Audio error (non-critical):', e);
+        }
       }
     }
   }
@@ -1558,8 +1544,22 @@ function loadAndPlayTrack() {
     // Play audio file
     musicPlayer.currentType = 'audio';
     musicPlayer.audio.src = track.url;
-    musicPlayer.audio.play();
-    musicPlayer.isPlaying = true;
+    try {
+      const playPromise = musicPlayer.audio.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            musicPlayer.isPlaying = true;
+          })
+          .catch(error => {
+            console.log('Audio play failed (non-critical):', error);
+            musicPlayer.isPlaying = false;
+          });
+      }
+    } catch (e) {
+      console.log('Audio error (non-critical):', e);
+      musicPlayer.isPlaying = false;
+    }
   }
   
   const playBtn = document.getElementById('music-play');
@@ -2234,281 +2234,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// ========================================
-// SECRET SNAKE GAME
-// ========================================
-
-let snakeGame = {
-  canvas: null,
-  ctx: null,
-  snake: [],
-  food: null,
-  direction: 'right',
-  nextDirection: 'right',
-  score: 0,
-  highScore: 0,
-  gameLoop: null,
-  gridSize: 20,
-  tileCount: 20,
-  speed: 100
-};
-
-function initSecretGame() {
-  const logo = document.getElementById('logo-game-trigger');
-  const overlay = document.getElementById('secret-game-overlay');
-  const closeBtn = document.getElementById('secret-game-close');
-  const startBtn = document.getElementById('snake-start');
-  const restartBtn = document.getElementById('snake-restart');
-  
-  if (!logo) return;
-  
-  logo.addEventListener('click', () => {
-    if (overlay) {
-      overlay.classList.add('active');
-      initSnakeCanvas();
-      showMessageToast('🎮 Тайната игра е открита!', 'success');
-    }
-  });
-  
-  if (closeBtn) {
-    closeBtn.addEventListener('click', () => {
-      overlay.classList.remove('active');
-      stopSnakeGame();
-    });
-  }
-  
-  if (startBtn) {
-    startBtn.addEventListener('click', () => {
-      startSnakeGame();
-      startBtn.style.display = 'none';
-      restartBtn.style.display = 'inline-block';
-    });
-  }
-  
-  if (restartBtn) {
-    restartBtn.addEventListener('click', () => {
-      startSnakeGame();
-    });
-  }
-  
-  document.addEventListener('keydown', (e) => {
-    if (!overlay || !overlay.classList.contains('active')) return;
-    
-    switch(e.key) {
-      case 'ArrowUp':
-      case 'w':
-      case 'W':
-        if (snakeGame.direction !== 'down') snakeGame.nextDirection = 'up';
-        e.preventDefault();
-        break;
-      case 'ArrowDown':
-      case 's':
-      case 'S':
-        if (snakeGame.direction !== 'up') snakeGame.nextDirection = 'down';
-        e.preventDefault();
-        break;
-      case 'ArrowLeft':
-      case 'a':
-      case 'A':
-        if (snakeGame.direction !== 'right') snakeGame.nextDirection = 'left';
-        e.preventDefault();
-        break;
-      case 'ArrowRight':
-      case 'd':
-      case 'D':
-        if (snakeGame.direction !== 'left') snakeGame.nextDirection = 'right';
-        e.preventDefault();
-        break;
-    }
-  });
-  
-  try {
-    const saved = localStorage.getItem('snake-high-score');
-    if (saved) {
-      snakeGame.highScore = parseInt(saved);
-      const el = document.getElementById('snake-high-score');
-      if (el) el.textContent = snakeGame.highScore;
-    }
-  } catch (e) {}
-}
-
-function initSnakeCanvas() {
-  snakeGame.canvas = document.getElementById('snake-canvas');
-  if (!snakeGame.canvas) return;
-  
-  snakeGame.ctx = snakeGame.canvas.getContext('2d');
-  snakeGame.tileCount = snakeGame.canvas.width / snakeGame.gridSize;
-}
-
-function startSnakeGame() {
-  snakeGame.snake = [
-    { x: 10, y: 10 },
-    { x: 9, y: 10 },
-    { x: 8, y: 10 }
-  ];
-  snakeGame.direction = 'right';
-  snakeGame.nextDirection = 'right';
-  snakeGame.score = 0;
-  
-  const scoreEl = document.getElementById('snake-score');
-  if (scoreEl) scoreEl.textContent = '0';
-  
-  spawnFood();
-  
-  if (snakeGame.gameLoop) clearInterval(snakeGame.gameLoop);
-  snakeGame.gameLoop = setInterval(updateSnakeGame, snakeGame.speed);
-}
-
-function stopSnakeGame() {
-  if (snakeGame.gameLoop) {
-    clearInterval(snakeGame.gameLoop);
-    snakeGame.gameLoop = null;
-  }
-}
-
-function updateSnakeGame() {
-  snakeGame.direction = snakeGame.nextDirection;
-  
-  const head = { ...snakeGame.snake[0] };
-  
-  switch(snakeGame.direction) {
-    case 'up': head.y--; break;
-    case 'down': head.y++; break;
-    case 'left': head.x--; break;
-    case 'right': head.x++; break;
-  }
-  
-  if (head.x < 0 || head.x >= snakeGame.tileCount || 
-      head.y < 0 || head.y >= snakeGame.tileCount) {
-    gameOver();
-    return;
-  }
-  
-  for (let segment of snakeGame.snake) {
-    if (head.x === segment.x && head.y === segment.y) {
-      gameOver();
-      return;
-    }
-  }
-  
-  snakeGame.snake.unshift(head);
-  
-  if (head.x === snakeGame.food.x && head.y === snakeGame.food.y) {
-    snakeGame.score++;
-    const scoreEl = document.getElementById('snake-score');
-    if (scoreEl) scoreEl.textContent = snakeGame.score;
-    
-    if (popSound) {
-      const sound = popSound.cloneNode();
-      sound.volume = 0.3;
-      sound.playbackRate = 1 + (snakeGame.score * 0.1);
-      sound.play().catch(e => {});
-    }
-    
-    spawnFood();
-  } else {
-    snakeGame.snake.pop();
-  }
-  
-  drawSnakeGame();
-}
-
-function spawnFood() {
-  do {
-    snakeGame.food = {
-      x: Math.floor(Math.random() * snakeGame.tileCount),
-      y: Math.floor(Math.random() * snakeGame.tileCount)
-    };
-  } while (snakeGame.snake.some(s => s.x === snakeGame.food.x && s.y === snakeGame.food.y));
-}
-
-function drawSnakeGame() {
-  if (!snakeGame.ctx) return;
-  
-  const ctx = snakeGame.ctx;
-  const size = snakeGame.gridSize;
-  
-  ctx.fillStyle = '#0a0a0a';
-  ctx.fillRect(0, 0, snakeGame.canvas.width, snakeGame.canvas.height);
-  
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
-  ctx.lineWidth = 1;
-  for (let i = 0; i <= snakeGame.tileCount; i++) {
-    ctx.beginPath();
-    ctx.moveTo(i * size, 0);
-    ctx.lineTo(i * size, snakeGame.canvas.height);
-    ctx.stroke();
-    
-    ctx.beginPath();
-    ctx.moveTo(0, i * size);
-    ctx.lineTo(snakeGame.canvas.width, i * size);
-    ctx.stroke();
-  }
-  
-  const colors = ['#ff006a', '#ff00ff', '#00f0ff', '#7cff00', '#ffed00', '#ff8c00'];
-  snakeGame.snake.forEach((segment, i) => {
-    const colorIndex = i % colors.length;
-    ctx.fillStyle = colors[colorIndex];
-    ctx.fillRect(
-      segment.x * size + 2,
-      segment.y * size + 2,
-      size - 4,
-      size - 4
-    );
-    
-    if (i === 0) {
-      ctx.shadowBlur = 15;
-      ctx.shadowColor = colors[colorIndex];
-      ctx.fillRect(
-        segment.x * size + 2,
-        segment.y * size + 2,
-        size - 4,
-        size - 4
-      );
-      ctx.shadowBlur = 0;
-    }
-  });
-  
-  if (snakeGame.food) {
-    const foodColors = ['#ff0000', '#ff8c00', '#ffff00', '#008000', '#0000ff', '#8b00ff'];
-    const colorIndex = Math.floor(Date.now() / 200) % foodColors.length;
-    ctx.fillStyle = foodColors[colorIndex];
-    ctx.shadowBlur = 20;
-    ctx.shadowColor = foodColors[colorIndex];
-    
-    ctx.beginPath();
-    ctx.arc(
-      snakeGame.food.x * size + size / 2,
-      snakeGame.food.y * size + size / 2,
-      size / 2 - 4,
-      0,
-      Math.PI * 2
-    );
-    ctx.fill();
-    ctx.shadowBlur = 0;
-  }
-}
-
-function gameOver() {
-  stopSnakeGame();
-  
-  if (snakeGame.score > snakeGame.highScore) {
-    snakeGame.highScore = snakeGame.score;
-    const el = document.getElementById('snake-high-score');
-    if (el) el.textContent = snakeGame.highScore;
-    
-    try {
-      localStorage.setItem('snake-high-score', snakeGame.highScore);
-    } catch (e) {}
-    
-    showMessageToast(`🎉 НОВ РЕКОРД! ${snakeGame.highScore}`, 'success');
-  } else {
-    showMessageToast(`💀 Game Over! Резултат: ${snakeGame.score}`, 'error');
-  }
-  
-  const restartBtn = document.getElementById('snake-restart');
-  if (restartBtn) restartBtn.style.display = 'inline-block';
-}
 
 // ========================================
 // AI CHATBOT
@@ -2772,7 +2497,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initAimTrainer();
   initFlagGame();
   initFlagGameCloseButton();
-  initSecretGame();
+  initSpaceGame();
   
   initAIChatbot();
   initMessageBoard();
@@ -3007,4 +2732,424 @@ That's it! Your mobile menu should now work perfectly.
 
   console.log("✅ Viktor.RGB готов! 🌈");
   console.log("🎮 Тайна: Кликни върху лого-то VIKTOR за secret game!");
-});
+});/* ============================
+/* ============================
+   SIMPLE SPACE SHOOTER GAME
+   Fresh & Bug-Free Version
+============================ */
+
+let spaceGame = {
+  running: false,
+  canvas: null,
+  ctx: null,
+  player: {
+    x: 175,
+    y: 350,
+    width: 50,
+    height: 50,
+    speed: 5,
+    health: 3
+  },
+  bullets: [],
+  enemies: [],
+  explosions: [],
+  score: 0,
+  wave: 1,
+  gameTime: 0,
+  keys: {},
+  lastHitTime: 0
+};
+
+const SPACE_GAME_CONFIG = {
+  WIDTH: 400,
+  HEIGHT: 400,
+  BULLET_SPEED: 7,
+  ENEMY_SPEED: 2,
+  SPAWN_RATE: 80
+};
+
+function initSpaceGame() {
+  try {
+    const logoTrigger = document.getElementById("logo-game-trigger");
+    const overlay = document.getElementById("secret-game-overlay");
+    const startBtn = document.getElementById("snake-start");
+    const restartBtn = document.getElementById("snake-restart");
+    const canvas = document.getElementById("snake-canvas");
+    const closeBtn = document.getElementById("secret-game-close");
+
+    if (!canvas || !overlay || !startBtn) {
+      console.log("Space game HTML elements missing");
+      return;
+    }
+
+    spaceGame.canvas = canvas;
+    spaceGame.ctx = canvas.getContext("2d");
+    canvas.width = SPACE_GAME_CONFIG.WIDTH;
+    canvas.height = SPACE_GAME_CONFIG.HEIGHT;
+
+    // Update game title and instructions
+    const title = overlay.querySelector(".secret-game-title");
+    if (title) title.textContent = "🚀 Space Shooter";
+
+    const instructions = overlay.querySelector(".secret-game-instructions");
+    if (instructions) {
+      instructions.textContent = "Arrow Keys/WASD to move • SPACE to shoot • Destroy enemies!";
+    }
+
+    // Logo click to open
+    if (logoTrigger) {
+      logoTrigger.style.cursor = "pointer";
+      logoTrigger.addEventListener("click", () => {
+        overlay.classList.add("active");
+      });
+    }
+
+    // Start button
+    if (startBtn) {
+      startBtn.textContent = "Start Game";
+      startBtn.addEventListener("click", () => {
+        startSpaceGameSession();
+      });
+    }
+
+    // Restart button
+    if (restartBtn) {
+      restartBtn.addEventListener("click", () => {
+        stopSpaceGameSession();
+        startSpaceGameSession();
+      });
+    }
+
+    // Close button
+    if (closeBtn) {
+      closeBtn.addEventListener("click", () => {
+        stopSpaceGameSession();
+        overlay.classList.remove("active");
+      });
+    }
+
+    // Keyboard input
+    document.addEventListener("keydown", (e) => {
+      spaceGame.keys[e.key.toLowerCase()] = true;
+      if (e.key === " ") e.preventDefault();
+    });
+
+    document.addEventListener("keyup", (e) => {
+      spaceGame.keys[e.key.toLowerCase()] = false;
+    });
+
+    console.log("✅ Space game initialized");
+  } catch (e) {
+    console.error("Error initializing space game:", e);
+  }
+}
+
+function startSpaceGameSession() {
+  try {
+    // Reset all keys and timers
+    spaceGame.keys = {};
+    spaceGame.lastShot = 0;
+    spaceGame.lastHitTime = 0;
+    
+    spaceGame.running = true;
+    spaceGame.player = {
+      x: 175,
+      y: 350,
+      width: 50,
+      height: 50,
+      speed: 5,
+      health: 3
+    };
+    spaceGame.bullets = [];
+    spaceGame.enemies = [];
+    spaceGame.explosions = [];
+    spaceGame.score = 0;
+    spaceGame.wave = 1;
+    spaceGame.gameTime = 0;
+
+    const startBtn = document.getElementById("snake-start");
+    const restartBtn = document.getElementById("snake-restart");
+    if (startBtn) startBtn.style.display = "none";
+    if (restartBtn) restartBtn.style.display = "block";
+
+    gameLoopSpace();
+  } catch (e) {
+    console.error("Error starting game:", e);
+    spaceGame.running = false;
+  }
+}
+
+function stopSpaceGameSession() {
+  spaceGame.running = false;
+  spaceGame.keys = {};
+  spaceGame.lastShot = 0;
+  spaceGame.lastHitTime = 0;
+  
+  const startBtn = document.getElementById("snake-start");
+  const restartBtn = document.getElementById("snake-restart");
+  if (startBtn) startBtn.style.display = "block";
+  if (restartBtn) restartBtn.style.display = "none";
+}
+
+function gameLoopSpace() {
+  if (!spaceGame.running) return;
+
+  try {
+    // Update
+    updatePlayerSpace();
+    updateBulletsSpace();
+    updateEnemiesSpace();
+    updateExplosionsSpace();
+    spawnEnemiesSpace();
+    checkCollisionsSpace();
+
+    // Draw
+    drawGameSpace();
+
+    // Update UI
+    const scoreEl = document.getElementById("snake-score");
+    const waveEl = document.getElementById("snake-high-score");
+    if (scoreEl) scoreEl.textContent = spaceGame.score;
+    if (waveEl) waveEl.textContent = `Wave ${spaceGame.wave} | HP: ${spaceGame.player.health}`;
+
+    spaceGame.gameTime++;
+    requestAnimationFrame(gameLoopSpace);
+  } catch (e) {
+    console.error("Game loop error:", e);
+    spaceGame.running = false;
+  }
+}
+
+function updatePlayerSpace() {
+  const keys = spaceGame.keys;
+  const player = spaceGame.player;
+
+  if (keys["arrowleft"] || keys["a"]) player.x -= player.speed;
+  if (keys["arrowright"] || keys["d"]) player.x += player.speed;
+  if (keys["arrowup"] || keys["w"]) player.y -= player.speed;
+  if (keys["arrowdown"] || keys["s"]) player.y += player.speed;
+
+  // Boundaries
+  player.x = Math.max(0, Math.min(player.x, SPACE_GAME_CONFIG.WIDTH - player.width));
+  player.y = Math.max(0, Math.min(player.y, SPACE_GAME_CONFIG.HEIGHT - player.height));
+
+  // Shoot - check if space is pressed and cooldown is ready
+  if (keys[" "] === true) {
+    if (spaceGame.lastShot === undefined) {
+      spaceGame.lastShot = 0;
+    }
+    
+    const timeSinceLastShot = spaceGame.gameTime - spaceGame.lastShot;
+    
+    if (timeSinceLastShot > 8) {
+      spaceGame.bullets.push({
+        x: player.x + player.width / 2 - 2,
+        y: player.y,
+        width: 4,
+        height: 10,
+        speed: SPACE_GAME_CONFIG.BULLET_SPEED
+      });
+      spaceGame.lastShot = spaceGame.gameTime;
+    }
+  }
+}
+
+function updateBulletsSpace() {
+  spaceGame.bullets = spaceGame.bullets.filter(bullet => {
+    bullet.y -= bullet.speed;
+    return bullet.y > 0;
+  });
+}
+
+function updateEnemiesSpace() {
+  spaceGame.enemies.forEach(enemy => {
+    enemy.y += SPACE_GAME_CONFIG.ENEMY_SPEED;
+  });
+
+  spaceGame.enemies = spaceGame.enemies.filter(e => e.y < SPACE_GAME_CONFIG.HEIGHT);
+}
+
+function updateExplosionsSpace() {
+  spaceGame.explosions = spaceGame.explosions.filter(exp => {
+    exp.life--;
+    return exp.life > 0;
+  });
+}
+
+function spawnEnemiesSpace() {
+  if (spaceGame.gameTime % SPACE_GAME_CONFIG.SPAWN_RATE === 0) {
+    const count = Math.min(1 + Math.floor(spaceGame.wave / 2), 4);
+    for (let i = 0; i < count; i++) {
+      if (Math.random() > 0.3) {
+        spaceGame.enemies.push({
+          x: Math.random() * (SPACE_GAME_CONFIG.WIDTH - 30),
+          y: -30,
+          width: 30,
+          height: 30,
+          health: spaceGame.wave > 3 ? 2 : 1
+        });
+      }
+    }
+
+    // Wave progression
+    if (spaceGame.enemies.length === 0 && spaceGame.gameTime > 200) {
+      spaceGame.wave++;
+    }
+  }
+}
+
+function checkCollisionsSpace() {
+  // Bullet-enemy collisions
+  spaceGame.bullets = spaceGame.bullets.filter(bullet => {
+    let hit = false;
+
+    spaceGame.enemies = spaceGame.enemies.filter(enemy => {
+      if (
+        bullet.x < enemy.x + enemy.width &&
+        bullet.x + bullet.width > enemy.x &&
+        bullet.y < enemy.y + enemy.height &&
+        bullet.y + bullet.height > enemy.y
+      ) {
+        hit = true;
+        enemy.health--;
+
+        spaceGame.explosions.push({
+          x: enemy.x + enemy.width / 2,
+          y: enemy.y + enemy.height / 2,
+          life: 15
+        });
+
+        spaceGame.score += 10 * spaceGame.wave;
+
+        if (enemy.health <= 0) {
+          return false; // Remove enemy
+        }
+      }
+      return true;
+    });
+
+    return !hit;
+  });
+
+  // Enemy-player collisions - with cooldown to prevent multiple hits
+  const enemiesToRemove = [];
+  
+  spaceGame.enemies.forEach((enemy, index) => {
+    if (
+      spaceGame.player.x < enemy.x + enemy.width &&
+      spaceGame.player.x + spaceGame.player.width > enemy.x &&
+      spaceGame.player.y < enemy.y + enemy.height &&
+      spaceGame.player.y + spaceGame.player.height > enemy.y
+    ) {
+      // Only damage if enough time has passed since last hit (0.5 seconds = 30 frames)
+      if (spaceGame.gameTime - spaceGame.lastHitTime > 30) {
+        spaceGame.player.health--;
+        spaceGame.lastHitTime = spaceGame.gameTime;
+
+        spaceGame.explosions.push({
+          x: spaceGame.player.x + spaceGame.player.width / 2,
+          y: spaceGame.player.y + spaceGame.player.height / 2,
+          life: 20
+        });
+
+        // Mark enemy for removal
+        enemiesToRemove.push(index);
+
+        if (spaceGame.player.health <= 0) {
+          stopSpaceGameSession();
+          const finalScore = spaceGame.score;
+          alert(`🎮 Game Over!\n\nFinal Score: ${finalScore}\nWave: ${spaceGame.wave}`);
+        }
+      }
+    }
+  });
+
+  // Remove hit enemies (in reverse order to maintain indices)
+  for (let i = enemiesToRemove.length - 1; i >= 0; i--) {
+    spaceGame.enemies.splice(enemiesToRemove[i], 1);
+  }
+
+  // Remove off-screen enemies
+  spaceGame.enemies = spaceGame.enemies.filter(e => e.y < SPACE_GAME_CONFIG.HEIGHT);
+}
+
+function drawGameSpace() {
+  const ctx = spaceGame.ctx;
+  const w = SPACE_GAME_CONFIG.WIDTH;
+  const h = SPACE_GAME_CONFIG.HEIGHT;
+
+  // Clear
+  ctx.fillStyle = "rgba(5, 10, 20, 0.9)";
+  ctx.fillRect(0, 0, w, h);
+
+  // Stars
+  ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
+  for (let i = 0; i < 20; i++) {
+    const x = (spaceGame.gameTime * 0.2 + i * 50) % w;
+    const y = (i * 20) % h;
+    ctx.fillRect(x, y, 2, 2);
+  }
+
+  // Explosions
+  spaceGame.explosions.forEach(exp => {
+    ctx.fillStyle = `rgba(255, 100, 0, ${exp.life / 20})`;
+    ctx.beginPath();
+    ctx.arc(exp.x, exp.y, exp.life, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // Player
+  const p = spaceGame.player;
+  ctx.fillStyle = "#00ff88";
+  ctx.beginPath();
+  ctx.moveTo(p.x + p.width / 2, p.y);
+  ctx.lineTo(p.x + p.width, p.y + p.height);
+  ctx.lineTo(p.x, p.y + p.height);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.shadowColor = "rgba(0, 255, 136, 0.8)";
+  ctx.shadowBlur = 10;
+  ctx.fill();
+  ctx.shadowBlur = 0;
+
+  // Bullets
+  ctx.fillStyle = "#00f0ff";
+  spaceGame.bullets.forEach(bullet => {
+    ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
+  });
+
+  // Enemies
+  ctx.fillStyle = "#ff006a";
+  spaceGame.enemies.forEach(enemy => {
+    ctx.beginPath();
+    ctx.moveTo(enemy.x + enemy.width / 2, enemy.y + enemy.height);
+    ctx.lineTo(enemy.x + enemy.width, enemy.y);
+    ctx.lineTo(enemy.x, enemy.y);
+    ctx.closePath();
+    ctx.fill();
+
+    if (enemy.health > 1) {
+      ctx.fillStyle = "#ffff00";
+      ctx.font = "12px Arial";
+      ctx.textAlign = "center";
+      ctx.fillText(enemy.health, enemy.x + enemy.width / 2, enemy.y + enemy.height / 2);
+      ctx.fillStyle = "#ff006a";
+    }
+  });
+
+  // UI
+  ctx.fillStyle = "#00f0ff";
+  ctx.font = "bold 14px Arial";
+  ctx.textAlign = "left";
+  ctx.fillText(`Score: ${spaceGame.score}`, 10, 25);
+  ctx.fillText(`Wave: ${spaceGame.wave}`, 10, 45);
+  ctx.fillText(`HP: ${spaceGame.player.health}`, 10, 65);
+}
+
+// Initialize when page loads
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initSpaceGame);
+} else {
+  initSpaceGame();
+}
