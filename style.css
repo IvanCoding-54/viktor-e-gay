@@ -30,6 +30,100 @@
 }
 
 /* ============================
+   ANIMATIONS
+============================ */
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(255, 0, 106, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 0, 106, 0.8);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================
    RESET & GLOBAL
 ============================ */
 
@@ -76,6 +170,105 @@ button, a, input, textarea, select, label,
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+/* ============================
+   FOCUS & ACCESSIBILITY
+============================ */
+
+/* Keyboard navigation focus states */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+.tab-btn:focus-visible,
+.theme-toggle:focus-visible,
+.game-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(255, 0, 106, 0.2);
+}
+
+/* Remove focus outline for mouse users (outline only for keyboard) */
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible),
+input:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: more) {
+  button:focus-visible,
+  a:focus-visible {
+    outline-width: 3px;
+    outline-offset: 3px;
+  }
+
+  .game-box {
+    border-width: 3px;
+  }
+}
+
+/* Loading state */
+[aria-busy="true"] {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.loading::after {
+  content: "⏳";
+  animation: spin 1s linear infinite;
+}
+
+/* ============================
+   NOTIFICATION STYLES
+============================ */
+
+.notification {
+  animation: slideInRight 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.notification-success {
+  background: #00ff88 !important;
+  color: #000 !important;
+}
+
+.notification-error {
+  background: var(--color-primary) !important;
+  color: white !important;
+}
+
+.notification-info {
+  background: var(--color-secondary) !important;
+  color: #000 !important;
+}
+
+/* ============================
+   BUTTON IMPROVEMENTS
+============================ */
+
+button {
+  transition: all var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 0, 106, 0.3);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
 }
 
 /* ============================
@@ -3275,4 +3468,188 @@ body.light .logo {
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+/* ============================
+   MOBILE IMPROVEMENTS
+============================ */
+
+@media (max-width: 768px) {
+  /* Better spacing on mobile */
+  body {
+    padding: 0;
+    margin: 0;
+  }
+
+  .game-box {
+    padding: 15px;
+    margin: 15px 0;
+  }
+
+  .game-title {
+    font-size: 18px;
+  }
+
+  .game-text {
+    font-size: 14px;
+  }
+
+  .game-info {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .aim-area {
+    height: 300px;
+    margin-bottom: 20px;
+  }
+
+  .aim-target {
+    width: 40px;
+    height: 40px;
+  }
+
+  /* Mobile menu improvements */
+  .tabs {
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .tab-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  /* Better button sizes on mobile */
+  .game-btn {
+    width: 100%;
+    padding: 15px;
+    font-size: 14px;
+    margin: 8px 0;
+  }
+
+  /* Leaderboard responsive */
+  .leaderboard {
+    padding: 15px;
+    margin-top: 15px;
+  }
+
+  #leaderboard-list li,
+  #aim-leaderboard-list li {
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+
+  /* Improve touch targets */
+  button, a, input {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-box {
+    padding: 12px;
+  }
+
+  .game-title {
+    font-size: 16px;
+  }
+
+  .aim-area {
+    height: 250px;
+  }
+
+  .tab-btn {
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+
+  /* Single column layout */
+  .home-layout {
+    flex-direction: column;
+  }
+
+  .notification {
+    max-width: calc(100vw - 20px);
+    left: 10px;
+    right: 10px;
+  }
+}
+
+/* ============================
+   PERFORMANCE OPTIMIZATIONS
+============================ */
+
+/* Use will-change sparingly */
+.game-btn:hover {
+  will-change: transform;
+}
+
+/* Debounce animations on scroll */
+.game-box {
+  contain: layout style paint;
+}
+
+/* Use GPU acceleration for animations */
+button,
+.tab-btn,
+.aim-target {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Leaderboard animations */
+#leaderboard-list li,
+#aim-leaderboard-list li {
+  padding: 10px 15px;
+  margin: 8px 0;
+  background: rgba(255, 0, 106, 0.1);
+  border-left: 4px solid var(--color-primary);
+  border-radius: 6px;
+  transition: all var(--transition-medium);
+}
+
+#leaderboard-list li:hover,
+#aim-leaderboard-list li:hover {
+  background: rgba(255, 0, 106, 0.2);
+  transform: translateX(5px);
+}
+
+#leaderboard-list li[data-rank="1"],
+#aim-leaderboard-list li[data-rank="1"] {
+  background: rgba(255, 215, 0, 0.2);
+  border-left-color: #ffd700;
+  font-weight: bold;
+}
+
+#leaderboard-list li[data-rank="2"],
+#aim-leaderboard-list li[data-rank="2"] {
+  background: rgba(192, 192, 192, 0.2);
+  border-left-color: #c0c0c0;
+}
+
+#leaderboard-list li[data-rank="3"],
+#aim-leaderboard-list li[data-rank="3"] {
+  background: rgba(205, 127, 50, 0.2);
+  border-left-color: #cd7f32;
+}
+
+/* Dark mode enhancements */
+body.dark .game-box {
+  background: linear-gradient(135deg, rgba(255, 0, 106, 0.05), rgba(0, 240, 255, 0.05));
+}
+
+body.dark .aim-area {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.05), rgba(124, 255, 0, 0.05));
+}
+
+/* Transition optimization */
+@media (prefers-reduced-motion: no-preference) {
+  button {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .game-box {
+    transition: all var(--transition-medium);
+  }
 }
