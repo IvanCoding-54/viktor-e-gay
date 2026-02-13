@@ -496,9 +496,6 @@
     Натиснете "viktor" на клавиатурата за секретен режим
   </span>
 
-  <!-- FIREBASE CONFIG - Load from separate file -->
-  <script src="firebase-config.js"></script>
-
   <!-- FIREBASE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
@@ -514,6 +511,16 @@
       doc,
       increment
     } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBFWvM1j4h3kXQuCuoIUnDMTcc48Mjt2Yw",
+      authDomain: "viktor-rgb.firebaseapp.com",
+      projectId: "viktor-rgb",
+      storageBucket: "viktor-rgb.firebasestorage.app",
+      messagingSenderId: "794757192149",
+      appId: "1:794757192149:web:716d69ca99a1f909bac55c",
+      measurementId: "G-9ZJZJGZXZT"
+    };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
