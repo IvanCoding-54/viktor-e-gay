@@ -2793,7 +2793,10 @@ function initSpaceGame() {
 
     const instructions = overlay.querySelector(".secret-game-instructions");
     if (instructions) {
-      instructions.textContent = "Arrow Keys/WASD to move • SPACE to shoot • Destroy enemies!";
+      const isMobile = window.innerWidth < 768;
+      instructions.textContent = isMobile 
+        ? "Tap sides to move • Tap bottom to shoot!"
+        : "Arrow Keys/WASD to move • SPACE to shoot • Destroy enemies!";
     }
 
     // Logo click to open
@@ -2836,6 +2839,33 @@ function initSpaceGame() {
 
     document.addEventListener("keyup", (e) => {
       spaceGame.keys[e.key.toLowerCase()] = false;
+    });
+
+    // Touch controls for mobile
+    canvas.addEventListener("touchstart", (e) => {
+      const touch = e.touches[0];
+      const rect = canvas.getBoundingClientRect();
+      const x = touch.clientX - rect.left;
+      const y = touch.clientY - rect.top;
+
+      // Left side - move left
+      if (x < SPACE_GAME_CONFIG.WIDTH / 3) {
+        spaceGame.keys["a"] = true;
+      }
+      // Right side - move right
+      else if (x > (SPACE_GAME_CONFIG.WIDTH * 2) / 3) {
+        spaceGame.keys["d"] = true;
+      }
+      // Middle - shoot
+      else if (y > SPACE_GAME_CONFIG.HEIGHT / 2) {
+        spaceGame.keys[" "] = true;
+      }
+    });
+
+    canvas.addEventListener("touchend", () => {
+      spaceGame.keys["a"] = false;
+      spaceGame.keys["d"] = false;
+      spaceGame.keys[" "] = false;
     });
 
     console.log("✅ Space game initialized");
@@ -2963,7 +2993,7 @@ function updateBulletsSpace() {
 
 function updateEnemiesSpace() {
   spaceGame.enemies.forEach(enemy => {
-    enemy.y += SPACE_GAME_CONFIG.ENEMY_SPEED;
+    enemy.y += enemy.speed || SPACE_GAME_CONFIG.ENEMY_SPEED;
   });
 
   spaceGame.enemies = spaceGame.enemies.filter(e => e.y < SPACE_GAME_CONFIG.HEIGHT);
@@ -2981,12 +3011,22 @@ function spawnEnemiesSpace() {
     const count = Math.min(1 + Math.floor(spaceGame.wave / 2), 4);
     for (let i = 0; i < count; i++) {
       if (Math.random() > 0.3) {
+        const types = [
+          { width: 30, height: 30, health: 1, speed: 1.5, type: 'basic' }, // Basic
+          { width: 35, height: 25, health: 2, speed: 1.0, type: 'heavy' }, // Heavy
+          { width: 25, height: 28, health: 1, speed: 2.5, type: 'fast' }   // Fast
+        ];
+        const enemyType = types[Math.floor(Math.random() * types.length)];
+        
         spaceGame.enemies.push({
-          x: Math.random() * (SPACE_GAME_CONFIG.WIDTH - 30),
+          x: Math.random() * (SPACE_GAME_CONFIG.WIDTH - enemyType.width),
           y: -30,
-          width: 30,
-          height: 30,
-          health: spaceGame.wave > 3 ? 2 : 1
+          width: enemyType.width,
+          height: enemyType.height,
+          health: enemyType.health,
+          speed: enemyType.speed,
+          type: enemyType.type,
+          wobble: Math.random() * Math.PI * 2
         });
       }
     }
@@ -3119,24 +3159,40 @@ function drawGameSpace() {
     ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
   });
 
-  // Enemies
-  ctx.fillStyle = "#ff006a";
-  spaceGame.enemies.forEach(enemy => {
+  // Enemies with variety
+  ctx.save();
+  spaceGame.enemies.forEach((enemy, index) => {
+    const wobbleX = enemy.type === 'fast' ? Math.sin(spaceGame.gameTime * 0.1 + enemy.wobble) * 5 : 0;
+    
+    ctx.fillStyle = 
+      enemy.type === 'basic' ? "#ff006a" :
+      enemy.type === 'heavy' ? "#ff3366" :
+      "#ff0099";
+    
     ctx.beginPath();
-    ctx.moveTo(enemy.x + enemy.width / 2, enemy.y + enemy.height);
-    ctx.lineTo(enemy.x + enemy.width, enemy.y);
-    ctx.lineTo(enemy.x, enemy.y);
+    ctx.moveTo(enemy.x + enemy.width / 2 + wobbleX, enemy.y + enemy.height);
+    ctx.lineTo(enemy.x + enemy.width + wobbleX, enemy.y);
+    ctx.lineTo(enemy.x + wobbleX, enemy.y);
     ctx.closePath();
     ctx.fill();
 
+    // Health indicator for damaged enemies
     if (enemy.health > 1) {
       ctx.fillStyle = "#ffff00";
-      ctx.font = "12px Arial";
+      ctx.font = "11px Arial";
       ctx.textAlign = "center";
-      ctx.fillText(enemy.health, enemy.x + enemy.width / 2, enemy.y + enemy.height / 2);
-      ctx.fillStyle = "#ff006a";
+      ctx.fillText(enemy.health, enemy.x + enemy.width / 2 + wobbleX, enemy.y + enemy.height / 2 + 3);
     }
+    
+    // Glow effect
+    ctx.strokeStyle = 
+      enemy.type === 'basic' ? "rgba(255, 0, 106, 0.5)" :
+      enemy.type === 'heavy' ? "rgba(255, 51, 102, 0.5)" :
+      "rgba(255, 0, 153, 0.5)";
+    ctx.lineWidth = 2;
+    ctx.stroke();
   });
+  ctx.restore();
 
   // UI
   ctx.fillStyle = "#00f0ff";
