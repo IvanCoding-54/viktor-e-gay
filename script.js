@@ -1,7 +1,28 @@
 /* ============================
    VIKTOR.RGB - Main JavaScript
    Enhanced & Optimized Version
+   WITH BUG FIXES & ERROR HANDLING
 ============================ */
+
+// ========================================
+// CONFIGURATION - CENTRALIZED SETTINGS
+// ========================================
+
+const CONFIG = {
+  MOBILE_BREAKPOINT: 768,
+  AIM_GAME_DURATION: 20,
+  AIM_TARGET_LIFETIME: 900,
+  AIM_TARGET_SPAWN_RATE: 450,
+  FLAG_GAME_DURATION: 120,
+  FLAG_SPAWN_RATE: 600,
+  COMBO_TIMEOUT: 2000,
+  SNAKE_INITIAL_SPEED: 100,
+  SNAKE_SPEED_INCREASE: 5,
+  SNAKE_MIN_SPEED: 40,
+  LEADERBOARD_LIMIT: 10,
+  RETRY_ATTEMPTS: 2,
+  RETRY_DELAY: 2000,
+};
 
 // ========================================
 // UTILITY FUNCTIONS
@@ -19,20 +40,60 @@ function debounce(func, wait) {
   };
 }
 
+// Safe DOM element access
+function getElement(id) {
+  const el = document.getElementById(id);
+  if (!el && id) {
+    console.warn(`⚠️ Element with id "${id}" not found`);
+  }
+  return el;
+}
+
+// User-friendly notifications
+function showNotification(message, type = 'info') {
+  try {
+    const notif = document.createElement('div');
+    notif.className = `notification notification-${type}`;
+    notif.textContent = message;
+    notif.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 20px;
+      background: ${type === 'error' ? '#ff006a' : type === 'success' ? '#00ff88' : '#00f0ff'};
+      color: ${type === 'success' ? '#000' : 'white'};
+      border-radius: 8px;
+      z-index: 10000;
+      animation: slideIn 0.3s ease;
+      max-width: 300px;
+      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    `;
+    document.body.appendChild(notif);
+    setTimeout(() => {
+      try {
+        notif.remove();
+      } catch (e) {}
+    }, 3000);
+  } catch (e) {
+    console.error('Error showing notification:', e);
+  }
+}
+
 // ========================================
 // LEADERBOARD (FIREBASE)
 // ========================================
 
-async function renderLeaderboard() {
+async function renderLeaderboard(retries = CONFIG.RETRY_ATTEMPTS) {
   const list = document.getElementById("leaderboard-list");
   if (!list || typeof loadLeaderboard !== "function") return;
 
-  list.innerHTML = "<li>Зареждане...</li>";
+  list.innerHTML = "<li>⏳ Зареждане...</li>";
 
   try {
     const entries = await loadLeaderboard();
 
-    if (entries.length === 0) {
+    if (!entries || entries.length === 0) {
       list.innerHTML = "<li>Няма записани резултати още.</li>";
       return;
     }
@@ -41,7 +102,10 @@ async function renderLeaderboard() {
     entries.forEach((entry, i) => {
       const li = document.createElement("li");
       li.setAttribute("data-rank", i + 1);
-      li.textContent = `${entry.name} – ${entry.score} точки`;
+      li.style.animation = `slideIn 0.3s ease ${i * 0.05}s both`;
+      
+      const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `#${i + 1}`;
+      li.textContent = `${medal} ${entry.name} – ${entry.score} точки`;
 
       if (i === 0) li.classList.add("rank-1");
       else if (i === 1) li.classList.add("rank-2");
@@ -50,21 +114,26 @@ async function renderLeaderboard() {
       list.appendChild(li);
     });
   } catch (e) {
-    console.error("Грешка при зареждане на класацията:", e);
-    list.innerHTML = "<li>Грешка при зареждане</li>";
+    console.error("❌ Leaderboard error:", e);
+    list.innerHTML = "<li>⚠️ Грешка при зареждане на класацията</li>";
+
+    // Retry after delay
+    if (retries > 0) {
+      setTimeout(() => renderLeaderboard(retries - 1), CONFIG.RETRY_DELAY);
+    }
   }
 }
 
-async function renderAimLeaderboard() {
+async function renderAimLeaderboard(retries = CONFIG.RETRY_ATTEMPTS) {
   const list = document.getElementById("aim-leaderboard-list");
   if (!list) return;
 
-  list.innerHTML = "<li>Зареждане...</li>";
+  list.innerHTML = "<li>⏳ Зареждане...</li>";
 
   try {
     const entries = await loadAimLeaderboard();
 
-    if (entries.length === 0) {
+    if (!entries || entries.length === 0) {
       list.innerHTML = "<li>Няма записани резултати още.</li>";
       return;
     }
@@ -73,7 +142,10 @@ async function renderAimLeaderboard() {
     entries.forEach((e, i) => {
       const li = document.createElement("li");
       li.setAttribute("data-rank", i + 1);
-      li.textContent = `${e.name} – ${e.score} точки`;
+      li.style.animation = `slideIn 0.3s ease ${i * 0.05}s both`;
+      
+      const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `#${i + 1}`;
+      li.textContent = `${medal} ${e.name} – ${e.score} точки`;
       
       if (i === 0) li.classList.add("rank-1");
       else if (i === 1) li.classList.add("rank-2");
@@ -82,8 +154,12 @@ async function renderAimLeaderboard() {
       list.appendChild(li);
     });
   } catch (e) {
-    console.error("Грешка при зареждане на aim класацията:", e);
-    list.innerHTML = "<li>Грешка при зареждане</li>";
+    console.error("❌ Aim Leaderboard error:", e);
+    list.innerHTML = "<li>⚠️ Грешка при зареждане</li>";
+
+    if (retries > 0) {
+      setTimeout(() => renderAimLeaderboard(retries - 1), CONFIG.RETRY_DELAY);
+    }
   }
 }
 
